@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Unitable\Graham\Method\Method;
 use Unitable\Graham\Engine\Engine;
@@ -23,6 +24,8 @@ use Unitable\Graham\Plan\PlanPrice;
  * @property float $discount
  * @property Method $method
  * @property Engine $engine
+ * @property Carbon $ends_at
+ * @property Carbon $trial_ends_at
  */
 class Subscription extends Model {
 

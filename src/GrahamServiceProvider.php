@@ -3,31 +3,28 @@
 namespace Unitable\Graham;
 
 use Illuminate\Support\ServiceProvider;
-use Unitable\Graham\Engines\Hosted\HostedEngine;
+use Unitable\Graham\Observers\SubscriptionObserver;
+use Unitable\Graham\Subscription\Subscription;
 
-class GrahamServiceProvider extends ServiceProvider
-{
+class GrahamServiceProvider extends ServiceProvider {
 
     /**
      * Register the application services.
+     *
+     * @return void
      */
-    public function register()
-    {
-        // Automatically apply the package configuration
+    public function register() {
         $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'graham');
 
-        // Register the main class to use with the facade
         $this->app->singleton('graham', function () {
             return new Graham;
-        });
-
-        $this->app->singleton(HostedEngine::class, function() {
-            return new HostedEngine();
         });
     }
 
     /**
      * Bootstrap the application services.
+     *
+     * @return void
      */
     public function boot()
     {
@@ -62,6 +59,17 @@ class GrahamServiceProvider extends ServiceProvider
             // Registering package commands.
             // $this->commands([]);
         }
+
+        $this->loadObservers();
+    }
+
+    /**
+     * Load any application observers.
+     *
+     * @return void
+     */
+    protected function loadObservers() {
+        Subscription::observe(SubscriptionObserver::class);
     }
 
 }

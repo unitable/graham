@@ -3,6 +3,7 @@
 namespace Unitable\Graham\Engine;
 
 use Illuminate\Support\Carbon;
+use Unitable\Graham\Billable;
 use Unitable\Graham\Coupon\Coupon;
 use Unitable\Graham\Method\Method;
 use Unitable\Graham\Plan\Plan;
@@ -13,11 +14,11 @@ use Unitable\Graham\Subscription\SubscriptionDiscount;
 abstract class SubscriptionBuilder implements Contracts\SubscriptionBuilder {
 
     /**
-     * The subscription method.
+     * The subscription owner.
      *
-     * @var Method
+     * @var Billable
      */
-    protected Method $method;
+    protected $owner;
 
     /**
      * The subscription plan.
@@ -25,6 +26,13 @@ abstract class SubscriptionBuilder implements Contracts\SubscriptionBuilder {
      * @var Plan
      */
     protected Plan $plan;
+
+    /**
+     * The subscription method.
+     *
+     * @var Method
+     */
+    protected Method $method;
 
     /**
      * The subscription trial days.
@@ -50,13 +58,15 @@ abstract class SubscriptionBuilder implements Contracts\SubscriptionBuilder {
     /**
      * SubscriptionBuilder constructor.
      *
-     * @param Method $method
+     * @param $owner
      * @param Plan $plan
+     * @param Method $method
      * @param PlanPrice|null $plan_price
      */
-    public function __construct(Method $method, Plan $plan, ?PlanPrice $plan_price = null) {
-        $this->method = $method;
+    public function __construct($owner, Plan $plan, Method $method, ?PlanPrice $plan_price = null) {
+        $this->owner = $owner;
         $this->plan = $plan;
+        $this->method = $method;
         $this->plan_price = $plan_price ?? $plan->price();
     }
 
@@ -104,6 +114,7 @@ abstract class SubscriptionBuilder implements Contracts\SubscriptionBuilder {
     public function create(): Subscription {
         $subscription = Subscription::create([
             'status' => Subscription::PROCESSING,
+            'owner_id' => $this->owner->id,
             'plan_id' => $this->plan->id,
             'plan_price_id' => $this->plan_price->id,
             'method' => get_class($this->method),

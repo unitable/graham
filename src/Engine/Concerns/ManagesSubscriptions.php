@@ -3,6 +3,7 @@
 namespace Unitable\Graham\Engine\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
+use Unitable\Graham\Billable;
 use Unitable\Graham\Engine\Contracts\SubscriptionBuilder;
 use Unitable\Graham\Method\Method;
 use Unitable\Graham\Plan\Plan;
@@ -23,12 +24,13 @@ trait ManagesSubscriptions {
     /**
      * Create a new subscription.
      *
-     * @param Method $method
+     * @param $owner
      * @param Plan $plan
+     * @param Method $method
      * @param PlanPrice|null $plan_price
      * @return SubscriptionBuilder
      */
-    public abstract function newSubscription(Method $method, Plan $plan, ?PlanPrice $plan_price = null): SubscriptionBuilder;
+    public abstract function newSubscription($owner, Plan $plan, Method $method, ?PlanPrice $plan_price = null): SubscriptionBuilder;
 
     /**
      * Cancel a subscription.

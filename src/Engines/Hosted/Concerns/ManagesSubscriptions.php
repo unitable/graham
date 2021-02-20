@@ -13,13 +13,14 @@ trait ManagesSubscriptions {
     /**
      * Create a new subscription.
      *
-     * @param Method $method
+     * @param $owner
      * @param Plan $plan
+     * @param Method $method
      * @param PlanPrice|null $plan_price
      * @return SubscriptionBuilder
      */
-    public function newSubscription(Method $method, Plan $plan, ?PlanPrice $plan_price = null): SubscriptionBuilder {
-        return new SubscriptionBuilder($method, $plan, $plan_price);
+    public function newSubscription($owner, Plan $plan, Method $method, ?PlanPrice $plan_price = null): SubscriptionBuilder {
+        return new SubscriptionBuilder($owner, $plan, $method, $plan_price);
     }
 
     /**

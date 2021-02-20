@@ -1,6 +1,5 @@
 @echo off
 
-for /F "tokens=2" %%i in ('date /t') do set mydate=%%i
-set mytime=%time%
+set bklog=%date:~6,4%-%date:~3,2%-%date:~0,2%_%time:~0,2%%time:~3,2%
 
-git add . && git commit -m "%mydate% %mytime%"
+git add . && git commit -m "%bklog%"

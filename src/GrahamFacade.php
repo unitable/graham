@@ -5,7 +5,9 @@ namespace Unitable\Graham;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @see \Unitable\Graham\Skeleton\SkeletonClass
+ * @method static \stdClass currency(?string $code = null) Get the active currency or a given one.
+ *
+ * @see \Unitable\Graham\Graham
  */
 class GrahamFacade extends Facade
 {

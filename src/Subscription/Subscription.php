@@ -22,6 +22,11 @@ class Subscription extends Model {
 
     protected $guarded = [];
 
+    protected $casts = [
+        'trial_ends_at' => 'datetime',
+        'ends_at' => 'datetime'
+    ];
+
     /**
      * Determine if the subscription is on trial period.
      *

@@ -19,8 +19,6 @@ class CreatePlanPricesTable extends Migration {
             $table->integer('duration');
             $table->string('currency_code', 3);
             $table->decimal('currency_price', 20, 2);
-
-            $table->unique('plan_id', 'currency_code');
         });
     }
 

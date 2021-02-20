@@ -9,10 +9,21 @@ use Unitable\Graham\Subscription\Subscription;
 /**
  * @property int $id
  * @property string $code
+ * @property float $value
  */
 class Coupon extends Model implements Discountable {
 
     protected $guarded = [];
+
+    /**
+     * Find a coupon by its code.
+     *
+     * @param string $code
+     * @return static|null
+     */
+    public static function findByCode(string $code) {
+        return static::query()->where('code', $code)->first();
+    }
 
     /**
      * Get the discount for a subscription.
@@ -21,8 +32,6 @@ class Coupon extends Model implements Discountable {
      * @return float
      */
     public function getDiscount(Subscription $subscription): float {
-        // TODO
-
-        return 10.00;
+        return $subscription->price * ($this->value / 100);
     }
 }

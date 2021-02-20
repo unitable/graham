@@ -12,7 +12,7 @@ interface SubscriptionBuilder {
      * Set the subscription trial days.
      *
      * @param int $days
-     * @return mixed
+     * @return $this
      */
     public function trial(int $days);
 

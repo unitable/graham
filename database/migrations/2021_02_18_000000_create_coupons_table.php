@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateSubscriptionDiscountsTable extends Migration {
+class CreateCouponsTable extends Migration {
 
     /**
      * Run the migrations.
@@ -12,12 +12,12 @@ class CreateSubscriptionDiscountsTable extends Migration {
      * @return void
      */
     public function up() {
-        Schema::create('subscription_discounts', function (Blueprint $table) {
+        Schema::create('coupons', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('subscription_id');
-            $table->string('discount_type');
-            $table->unsignedBigInteger('discount_id')->nullable();
+            $table->string('code');
+            $table->string('type');
             $table->decimal('value', 20, 2);
+            $table->timestamps();
         });
     }
 
@@ -27,7 +27,7 @@ class CreateSubscriptionDiscountsTable extends Migration {
      * @return void
      */
     public function down() {
-        Schema::dropIfExists('subscription_discounts');
+        Schema::dropIfExists('coupons');
     }
 
 }

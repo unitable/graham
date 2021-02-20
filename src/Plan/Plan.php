@@ -3,12 +3,12 @@
 namespace Unitable\Graham\Plan;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Unitable\Graham\GrahamFacade as Graham;
 
 /**
  * @property int $id
- * @property PlanPrice $price
+ * @property string $name
+ * @property float $price
  */
 class Plan extends Model {
 
@@ -17,11 +17,21 @@ class Plan extends Model {
     /**
      * Get the localized price model.
      *
-     * @return HasOne
+     * @return PlanPrice
      */
-    public function price(): HasOne {
+    public function price(): PlanPrice {
         return $this->hasOne(PlanPrice::class)
-            ->where('currency_code', Graham::currency()->code);
+            ->where('currency_code', Graham::currency()->code)
+            ->first();
+    }
+
+    /**
+     * Get the localized price.
+     *
+     * @return float
+     */
+    public function getPriceAttribute(): float {
+        return $this->price()->currency_price;
     }
 
 }

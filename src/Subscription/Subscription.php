@@ -4,11 +4,23 @@ namespace Unitable\Graham\Subscription;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Collection;
 use Unitable\Graham\Method\Method;
 use Unitable\Graham\Engine\Engine;
+use Unitable\Graham\Plan\Plan;
+use Unitable\Graham\Plan\PlanPrice;
 
 /**
+ * @property int $id
  * @property string $status
+ * @property Plan $plan
+ * @property string $currency_code
+ * @property float $price
+ * @property float $renewal_price
+ * @property Collection|SubscriptionDiscount[] $discounts
+ * @property float $discount
  * @property Method $method
  * @property Engine $engine
  */
@@ -172,6 +184,75 @@ class Subscription extends Model {
      */
     public function modify(array $data) {
         $this->engine->modifySubscription($this, $data);
+    }
+
+    /**
+     * Get the subscription plan model.
+     *
+     * @return BelongsTo
+     */
+    public function plan(): BelongsTo {
+        return $this->belongsTo(Plan::class);
+    }
+
+    /**
+     * Get the subscription price model.
+     *
+     * @return PlanPrice
+     */
+    public function price(): PlanPrice {
+        return $this->belongsTo(PlanPrice::class, 'plan_price_id')->first();
+    }
+
+    /**
+     * Get the subscription currency code.
+     *
+     * @return string
+     */
+    public function getCurrencyCodeAttribute() {
+        return $this->price()->currency_code;
+    }
+
+    /**
+     * Get the subscription price.
+     *
+     * @return float
+     */
+    public function getPriceAttribute(): float {
+        return $this->price()->currency_price;
+    }
+
+    /**
+     * Get the subscription discounts models.
+     *
+     * @return HasMany
+     */
+    public function discounts(): HasMany {
+        return $this->hasMany(SubscriptionDiscount::class);
+    }
+
+    /**
+     * Get the subscription discount sum.
+     *
+     * @return float
+     */
+    public function getDiscountAttribute() {
+        $total = 0.00;
+
+        foreach ($this->discounts as $discount) {
+            $total += $discount->value;
+        }
+
+        return $total;
+    }
+
+    /**
+     * Get the subscription renewal price.
+     *
+     * @return float
+     */
+    public function getRenewalPriceAttribute(): float {
+        return $this->price - $this->discount;
     }
 
     /**

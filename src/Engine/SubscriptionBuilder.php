@@ -57,7 +57,7 @@ abstract class SubscriptionBuilder implements Contracts\SubscriptionBuilder {
     public function __construct(Method $method, Plan $plan, ?PlanPrice $plan_price = null) {
         $this->method = $method;
         $this->plan = $plan;
-        $this->plan_price = $plan_price ?? $plan->price;
+        $this->plan_price = $plan_price ?? $plan->price();
     }
 
     /**
@@ -91,7 +91,7 @@ abstract class SubscriptionBuilder implements Contracts\SubscriptionBuilder {
      * @return $this
      */
     public function coupon(Coupon $coupon) {
-        // TODO: Implement coupon() method.
+        $this->coupon = $coupon;
 
         return $this;
     }
@@ -114,6 +114,7 @@ abstract class SubscriptionBuilder implements Contracts\SubscriptionBuilder {
 
         if (isset($this->coupon)) {
             SubscriptionDiscount::create([
+                'subscription_id' => $subscription->id,
                 'discount_type' => get_class($this->coupon),
                 'discount_id' => $this->coupon->id,
                 'value' => $this->coupon->getDiscount($subscription)

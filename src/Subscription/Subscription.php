@@ -26,6 +26,7 @@ use Unitable\Graham\Plan\PlanPrice;
  * @property Engine $engine
  * @property Carbon $ends_at
  * @property Carbon $trial_ends_at
+ * @property Collection|SubscriptionFlag[] $flags
  */
 class Subscription extends Model {
 
@@ -279,6 +280,41 @@ class Subscription extends Model {
      */
     public function getEngineAttribute(string $abstract): Engine {
         return app()->make($abstract);
+    }
+
+    /**
+     * Get the flags models.
+     *
+     * @return HasMany
+     */
+    public function flags(): HasMany {
+        return $this->hasMany(SubscriptionFlag::class);
+    }
+
+    /**
+     * Query only subscriptions with a given flag.
+     *
+     * @param Builder $query
+     * @param string $type
+     * @return Builder
+     */
+    public function scopeWithFlag(Builder $query, string $type): Builder {
+        return $query->whereHas('flags', function(Builder $query) use($type) {
+            $query->where('type', $type);
+        });
+    }
+
+    /**
+     * Query only subscriptions without a given flag.
+     *
+     * @param Builder $query
+     * @param string $type
+     * @return Builder
+     */
+    public function scopeWithoutFlag(Builder $query, string $type): Builder {
+        return $query->whereDoesntHave('flags', function(Builder $query) use($type) {
+            $query->where('type', $type);
+        });
     }
 
 }

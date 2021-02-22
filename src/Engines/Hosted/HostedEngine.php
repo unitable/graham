@@ -7,5 +7,6 @@ use Unitable\Graham\Engine\Engine;
 class HostedEngine extends Engine {
 
     use Concerns\ManagesSubscriptions;
+    use Concerns\ManagesInvoices;
 
 }

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Unitable\Graham\Engine\Engine;
 
 /**
- * @property ?int $id
+ * @property int|null $id
  * @property Engine $engine
  */
 abstract class Method extends Model {

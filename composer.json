@@ -47,7 +47,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Unitable\\Graham\\GrahamServiceProvider"
+                "Unitable\\Graham\\GrahamServiceProvider",
+                "Unitable\\Graham\\Engines\\Hosted\\HostedEngineServiceProvider"
             ],
             "aliases": {
                 "Graham": "Unitable\\Graham\\GrahamFacade"

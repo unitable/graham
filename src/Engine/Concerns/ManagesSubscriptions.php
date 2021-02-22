@@ -3,7 +3,6 @@
 namespace Unitable\Graham\Engine\Concerns;
 
 use Illuminate\Database\Eloquent\Builder;
-use Unitable\Graham\Billable;
 use Unitable\Graham\Engine\Contracts\SubscriptionBuilder;
 use Unitable\Graham\Method\Method;
 use Unitable\Graham\Plan\Plan;

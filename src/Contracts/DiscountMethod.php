@@ -4,7 +4,7 @@ namespace Unitable\Graham\Contracts;
 
 use Unitable\Graham\Subscription\Subscription;
 
-interface Discountable {
+interface DiscountMethod {
 
     /**
      * Get the discount for a subscription.

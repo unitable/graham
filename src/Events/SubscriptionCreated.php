@@ -2,14 +2,12 @@
 
 namespace Unitable\Graham\Events;
 
-use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 use Unitable\Graham\Subscription\Subscription;
 
 class SubscriptionCreated {
 
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable;
 
     /**
      * The event subscription.

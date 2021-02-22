@@ -76,7 +76,7 @@ abstract class SubscriptionBuilder implements Contracts\SubscriptionBuilder {
      * @param int $days
      * @return $this
      */
-    public function trial(int $days) {
+    public function trialDays(int $days) {
         $this->trial_days = $days;
 
         return $this;

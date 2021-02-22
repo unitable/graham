@@ -14,7 +14,7 @@ interface SubscriptionBuilder {
      * @param int $days
      * @return $this
      */
-    public function trial(int $days);
+    public function trialDays(int $days);
 
     /**
      * Set the subscription price.

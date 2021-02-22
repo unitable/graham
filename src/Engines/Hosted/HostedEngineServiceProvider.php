@@ -4,8 +4,10 @@ namespace Unitable\Graham\Engines\Hosted;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Unitable\Graham\Engines\Hosted\Listeners\DispatchWorkJobs;
 use Unitable\Graham\Engines\Hosted\Listeners\ProcessSubscription;
 use Unitable\Graham\Events\SubscriptionCreated;
+use Unitable\Graham\Events\WorkCommandFired;
 
 class HostedEngineServiceProvider extends ServiceProvider {
 
@@ -28,6 +30,7 @@ class HostedEngineServiceProvider extends ServiceProvider {
      * @return void
      */
     protected function registerEvents() {
+        Event::listen(WorkCommandFired::class, DispatchWorkJobs::class);
         Event::listen(SubscriptionCreated::class, ProcessSubscription::class);
     }
 

@@ -3,7 +3,7 @@
 namespace Unitable\Graham\Coupon;
 
 use Illuminate\Database\Eloquent\Model;
-use Unitable\Graham\Contracts\Discountable;
+use Unitable\Graham\Contracts\DiscountMethod;
 use Unitable\Graham\Subscription\Subscription;
 
 /**
@@ -11,7 +11,7 @@ use Unitable\Graham\Subscription\Subscription;
  * @property string $code
  * @property float $value
  */
-class Coupon extends Model implements Discountable {
+class Coupon extends Model implements DiscountMethod {
 
     protected $guarded = [];
 

@@ -3,6 +3,7 @@
 namespace Unitable\Graham;
 
 use Illuminate\Support\ServiceProvider;
+use Unitable\Graham\Console\Commands\WorkCommand;
 use Unitable\Graham\Observers\SubscriptionObserver;
 use Unitable\Graham\Subscription\Subscription;
 
@@ -57,7 +58,9 @@ class GrahamServiceProvider extends ServiceProvider {
             ], 'lang');*/
 
             // Registering package commands.
-            // $this->commands([]);
+             $this->commands([
+                 WorkCommand::class
+             ]);
         }
 
         $this->loadObservers();

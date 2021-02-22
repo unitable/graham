@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
+use Unitable\Graham\Engine\Contracts\SubscriptionInvoiceBuilder;
 use Unitable\Graham\Method\Method;
 use Unitable\Graham\Engine\Engine;
 use Unitable\Graham\Plan\Plan;
@@ -16,14 +17,18 @@ use Unitable\Graham\Plan\PlanPrice;
 /**
  * @property int $id
  * @property string $status
+ * @property int $owner_id
  * @property Plan $plan
+ * @property int $plan_id
  * @property string $currency_code
+ * @property int $plan_price_id
  * @property float $price
  * @property float $renewal_price
  * @property Collection|SubscriptionDiscount[] $discounts
  * @property float $discount
  * @property Method $method
  * @property Engine $engine
+ * @property Collection|SubscriptionInvoice[] $invoices
  * @property Carbon $ends_at
  * @property Carbon $trial_ends_at
  * @property Collection|SubscriptionFlag[] $flags
@@ -280,6 +285,24 @@ class Subscription extends Model {
      */
     public function getEngineAttribute(string $abstract): Engine {
         return app()->make($abstract);
+    }
+
+    /**
+     * Get the subscription invoices models.
+     *
+     * @return HasMany
+     */
+    public function invoices(): HasMany {
+        return $this->hasMany(SubscriptionInvoice::class);
+    }
+
+    /**
+     * Create a new invoice.
+     *
+     * @return SubscriptionInvoiceBuilder
+     */
+    public function newInvoice(): SubscriptionInvoiceBuilder {
+        return $this->engine->newInvoice($this);
     }
 
     /**

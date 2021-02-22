@@ -55,11 +55,9 @@ class ProcessTrialSubscriptions {
             ->withoutFlag('trial_invoice_created')
             ->get();
 
-        print_r($subscriptions->toArray());
-
         /** @var Subscription $subscription */
         foreach ($subscriptions as $subscription) {
-
+            $subscription->newInvoice()->create();
 
 //            $subscription->flags()->create([
 //                'type' => 'trial_invoice_created',

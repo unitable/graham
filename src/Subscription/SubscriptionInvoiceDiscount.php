@@ -10,7 +10,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $value
  * @property string $notes
  */
-class SubscriptionDiscount extends Model {
+class SubscriptionInvoiceDiscount extends Model {
 
     protected $guarded = [];
 

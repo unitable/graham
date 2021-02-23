@@ -114,7 +114,7 @@ abstract class SubscriptionBuilder implements Contracts\SubscriptionBuilder {
     public function create(): Subscription {
         $subscription = Subscription::create([
             'status' => Subscription::PROCESSING,
-            'owner_id' => $this->owner->id,
+            'user_id' => $this->owner->id,
             'plan_id' => $this->plan->id,
             'plan_price_id' => $this->plan_price->id,
             'method' => get_class($this->method),

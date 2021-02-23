@@ -16,7 +16,7 @@ class CreateSubscriptionInvoicesTable extends Migration {
             $table->id();
             $table->string('status');
             $table->unsignedBigInteger('subscription_id');
-            $table->unsignedBigInteger('owner_id');
+            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('plan_id');
             $table->unsignedBigInteger('plan_price_id');
             $table->string('method');

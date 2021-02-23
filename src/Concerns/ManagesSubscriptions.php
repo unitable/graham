@@ -29,7 +29,7 @@ trait ManagesSubscriptions {
      * @return Collection|Subscription[]
      */
     public function subscriptions() {
-        return $this->hasMany(Subscription::class, 'owner_id');
+        return $this->hasMany(Subscription::class, 'user_id');
     }
 
     /**

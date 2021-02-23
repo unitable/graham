@@ -17,7 +17,7 @@ use Unitable\Graham\Plan\PlanPrice;
 /**
  * @property int $id
  * @property string $status
- * @property int $owner_id
+ * @property int $user_id
  * @property Plan $plan
  * @property int $plan_id
  * @property string $currency_code
@@ -29,8 +29,8 @@ use Unitable\Graham\Plan\PlanPrice;
  * @property Method $method
  * @property Engine $engine
  * @property Collection|SubscriptionInvoice[] $invoices
- * @property Carbon $ends_at
- * @property Carbon $trial_ends_at
+ * @property Carbon|null $ends_at
+ * @property Carbon|null $trial_ends_at
  * @property Collection|SubscriptionFlag[] $flags
  */
 class Subscription extends Model {

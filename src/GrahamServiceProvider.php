@@ -3,9 +3,11 @@
 namespace Unitable\Graham;
 
 use Illuminate\Support\ServiceProvider;
-use Unitable\Graham\Console\Commands\WorkCommand;
+use Unitable\Graham\Console\Commands\CronjobCommand;
+use Unitable\Graham\Observers\SubscriptionInvoiceObserver;
 use Unitable\Graham\Observers\SubscriptionObserver;
 use Unitable\Graham\Subscription\Subscription;
+use Unitable\Graham\Subscription\SubscriptionInvoice;
 
 class GrahamServiceProvider extends ServiceProvider {
 
@@ -27,8 +29,7 @@ class GrahamServiceProvider extends ServiceProvider {
      *
      * @return void
      */
-    public function boot()
-    {
+    public function boot() {
         /*
          * Optional methods to load your package assets
          */
@@ -59,7 +60,7 @@ class GrahamServiceProvider extends ServiceProvider {
 
             // Registering package commands.
              $this->commands([
-                 WorkCommand::class
+                 CronjobCommand::class
              ]);
         }
 
@@ -73,6 +74,7 @@ class GrahamServiceProvider extends ServiceProvider {
      */
     protected function loadObservers() {
         Subscription::observe(SubscriptionObserver::class);
+        SubscriptionInvoice::observe(SubscriptionInvoiceObserver::class);
     }
 
 }

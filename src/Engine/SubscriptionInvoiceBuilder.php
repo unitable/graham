@@ -41,7 +41,7 @@ abstract class SubscriptionInvoiceBuilder implements Contracts\SubscriptionInvoi
         /** @var SubscriptionInvoice $invoice */
         $invoice = $subscription->invoices()->create([
             'status' => SubscriptionInvoice::PROCESSING,
-            'owner_id' => $subscription->owner_id,
+            'user_id' => $subscription->user_id,
             'plan_id' => $subscription->plan_id,
             'plan_price_id' => $subscription->plan_price_id,
             'method' => get_class($subscription->method),

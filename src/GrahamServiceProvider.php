@@ -17,7 +17,7 @@ class GrahamServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
-        $this->mergeConfigFrom(__DIR__.'/../config/graham.php.php', 'graham');
+        $this->mergeConfigFrom(__DIR__.'/../config/graham.php', 'graham');
 
         $this->app->singleton('graham', function () {
             return new Graham;
@@ -64,15 +64,15 @@ class GrahamServiceProvider extends ServiceProvider {
              ]);
         }
 
-        $this->loadObservers();
+        $this->registerObservers();
     }
 
     /**
-     * Load any application observers.
+     * Register any application observers.
      *
      * @return void
      */
-    protected function loadObservers() {
+    protected function registerObservers() {
         Subscription::observe(SubscriptionObserver::class);
         SubscriptionInvoice::observe(SubscriptionInvoiceObserver::class);
     }

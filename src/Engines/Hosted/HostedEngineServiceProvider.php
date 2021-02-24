@@ -19,7 +19,14 @@ class HostedEngineServiceProvider extends ServiceProvider {
         $this->app->singleton(HostedEngine::class, function() {
             return new HostedEngine();
         });
+    }
 
+    /**
+     * Bootstrap the package services.
+     *
+     * @return void
+     */
+    public function boot() {
         $this->registerEvents();
     }
 
@@ -37,15 +44,6 @@ class HostedEngineServiceProvider extends ServiceProvider {
         });
         Event::listen(Events\SubscriptionCreated::class, Listeners\StartProcessingSubscription::class);
         Event::listen(Events\SubscriptionInvoicePaid::class, Listeners\RenewIncompleteSubscription::class);
-    }
-
-    /**
-     * Bootstrap the application services.
-     *
-     * @return void
-     */
-    public function boot() {
-        //
     }
 
 }

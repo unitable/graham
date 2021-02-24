@@ -25,7 +25,7 @@ class GrahamServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Bootstrap the application services.
+     * Bootstrap the package services.
      *
      * @return void
      */

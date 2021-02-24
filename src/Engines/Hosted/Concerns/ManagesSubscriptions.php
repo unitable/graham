@@ -30,6 +30,10 @@ trait ManagesSubscriptions {
      */
     public function cancelSubscription(Subscription $subscription) {
         // TODO: Implement cancelSubscription() method.
+
+        $subscription->update([
+            'status' => Subscription::CANCELED
+        ]);
     }
 
     /**
@@ -49,6 +53,11 @@ trait ManagesSubscriptions {
      */
     public function modifySubscription(Subscription $subscription, array $data) {
         // TODO: Implement modifySubscription() method.
+
+        /*
+         * Não trocar de método/engine se houver alguma fatura aberta. Se precisar, migrar a engine da fatura também.
+         * Colisão com as jobs automáticas, como o handle de incomplete verifica só se a fatura é HostedEngine mas não a assinatura...
+         */
     }
 
 }

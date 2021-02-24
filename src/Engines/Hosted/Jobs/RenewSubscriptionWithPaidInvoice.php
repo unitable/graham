@@ -50,8 +50,8 @@ class RenewSubscriptionWithPaidInvoice {
      * @return void
      */
     public function handle() {
-        $price = $this->invoice->plan_price; // Use invoice instead subscription.
-        $period_ends_at = $this->subscription->period_ends_at->addDays($price->duration);
+        $duration = $this->invoice->plan_price->duration; // Use invoice instead subscription.
+        $period_ends_at = $this->subscription->period_ends_at->addDays($duration);
 
         $this->subscription->update([
             'status' => Subscription::ACTIVE,

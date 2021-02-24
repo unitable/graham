@@ -20,8 +20,12 @@ class RenewIncompleteSubscription {
         if ($invoice->engine instanceof HostedEngine) {
             $subscription = $invoice->subscription;
 
-            if ($subscription->incomplete()) {
-                RenewSubscriptionWithPaidInvoice::dispatch($subscription, $invoice);
+            if (!$subscription->incomplete()) return;
+
+            if ($renewal_invoice = $subscription->renewal_invoice) {
+                if ($renewal_invoice->id === $invoice->id) {
+                    RenewSubscriptionWithPaidInvoice::dispatch($subscription, $invoice);
+                }
             }
         }
     }

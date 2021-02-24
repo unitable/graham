@@ -5,7 +5,6 @@ namespace Unitable\Graham\Engines\Hosted\Jobs;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Unitable\Graham\Engines\Hosted\HostedEngine;
 use Unitable\Graham\Subscription\Subscription;
-use Unitable\Graham\Subscription\SubscriptionInvoice;
 
 class ProcessEndedSubscriptionsPeriods {
 
@@ -40,7 +39,7 @@ class ProcessEndedSubscriptionsPeriods {
             if ($invoice = $subscription->renewal_invoice) {
                 if ($invoice->paid()) {
                     RenewSubscriptionWithPaidInvoice::dispatch($subscription, $invoice);
-                } else if (!$subscription->markedForCancellation()) {
+                } else {
                     $subscription->markAsIncomplete();
                 }
             } else {

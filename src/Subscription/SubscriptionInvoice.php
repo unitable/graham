@@ -38,23 +38,23 @@ class SubscriptionInvoice extends Model {
     protected $guarded = [];
 
     /**
-     * Determine whether invoice is active or not.
+     * Determine whether invoice is ongoing or not.
      *
      * @return bool
      */
-    public function active(): bool {
+    public function ongoing(): bool {
         return in_array($this->status, [
             static::PROCESSING, static::OPEN
         ]);
     }
 
     /**
-     * Query only active invoices.
+     * Query only ongoing invoices.
      *
      * @param Builder $query
      * @return Builder
      */
-    public function scopeActive(Builder $query): Builder {
+    public function scopeOngoing(Builder $query): Builder {
         return $query->whereIn('status', [
             static::PROCESSING, static::OPEN
         ]);

@@ -52,6 +52,29 @@ class Subscription extends Model {
     ];
 
     /**
+     * Determine whether subscription is ongoing or not.
+     *
+     * @return bool
+     */
+    public function ongoing(): bool {
+        return in_array($this->status, [
+            static::PROCESSING, static::TRIAL, static::ACTIVE, static::INCOMPLETE
+        ]);
+    }
+
+    /**
+     * Query only ongoing subscriptions.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeOngoing(Builder $query): Builder {
+        return $query->whereIn('status', [
+            static::PROCESSING, static::TRIAL, static::ACTIVE, static::INCOMPLETE
+        ]);
+    }
+
+    /**
      * Determine if the subscription is on trial period.
      *
      * @return bool
@@ -150,7 +173,7 @@ class Subscription extends Model {
      * @return bool
      */
     public function onGracePeriod(): bool {
-        // TODO: implement method.
+        return $this->active() && $this->markedForCancellation();
     }
 
     /**
@@ -160,7 +183,7 @@ class Subscription extends Model {
      * @return Builder
      */
     public function scopeOnGracePeriod(Builder $query): Builder {
-        // TODO: implement method.
+        return $query->active()->markedForCancellation();
     }
 
     /**
@@ -170,6 +193,16 @@ class Subscription extends Model {
      */
     public function markedForCancellation(): bool {
         return $this->ends_at !== null;
+    }
+
+    /**
+     * Query only subscriptions marked for cancellation.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeMarkedForCancellation(Builder $query): Builder {
+        return $query->whereNotNull('ends_at');
     }
 
     /**
@@ -349,6 +382,16 @@ class Subscription extends Model {
      */
     public function flags(): HasMany {
         return $this->hasMany(SubscriptionFlag::class);
+    }
+
+    /**
+     * Determine whether the subscription has a given flag or not.
+     *
+     * @param string $type
+     * @return bool
+     */
+    public function hasFlag(string $type): bool {
+        return $this->flags()->where('type', $type)->exists();
     }
 
     /**

@@ -38,13 +38,28 @@ trait ManagesSubscriptions {
      * @param Plan|null $plan
      * @return bool
      */
-    public function subscribed(?Plan $plan = null) {
-        $subscribed = $this->subscriptions()->active();
+    public function subscribed(?Plan $plan = null): bool {
+        $subscriptions = $this->subscriptions()->active();
 
         if ($plan instanceof Plan)
-            $subscribed->where('plan_id', $plan->id);
+            $subscriptions->where('plan_id', $plan->id);
 
-        return $subscribed->exists();
+        return $subscriptions->exists();
+    }
+
+    /**
+     * Determine whether the billable has ongoing subscriptions or not.
+     *
+     * @param Plan|null $plan
+     * @return bool
+     */
+    public function hasOngoingSubscriptions(?Plan $plan = null): bool {
+        $subscriptions = $this->subscriptions()->ongoing();
+
+        if ($plan instanceof Plan)
+            $subscriptions->where('plan_id', $plan->id);
+
+        return $subscriptions->exists();
     }
 
 }

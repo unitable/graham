@@ -7,6 +7,7 @@ use Unitable\Graham\Method\Method;
 use Unitable\Graham\Plan\Plan;
 use Unitable\Graham\Plan\PlanPrice;
 use Unitable\Graham\Subscription\Subscription;
+use Unitable\Graham\Subscription\SubscriptionInvoice;
 
 trait ManagesSubscriptions {
 
@@ -29,11 +30,24 @@ trait ManagesSubscriptions {
      * @param Subscription $subscription
      */
     public function cancelSubscription(Subscription $subscription) {
-        // TODO: Implement cancelSubscription() method.
+        if ($subscription->canceled())
+            throw new \Exception('Subscription was already canceled.');
 
-        $subscription->update([
-            'status' => Subscription::CANCELED
-        ]);
+        if (!$subscription->ends_at)
+            $subscription->ends_at = $subscription->period_ends_at ?? now();
+
+        if ($subscription->ends_at->lessThanOrEqualTo(now())) {
+            $subscription->status = Subscription::CANCELED;
+
+            /** @var SubscriptionInvoice $invoice */
+            foreach ($subscription->invoices()->ongoing()->get() as $invoice) {
+                $invoice->status = SubscriptionInvoice::CANCELED;
+
+                $invoice->save(); // Dispatch individual events.
+            }
+        }
+
+        $subscription->save();
     }
 
     /**
@@ -42,7 +56,12 @@ trait ManagesSubscriptions {
      * @param Subscription $subscription
      */
     public function resumeSubscription(Subscription $subscription) {
-        // TODO: Implement resumeSubscription() method.
+        if (!$subscription->onGracePeriod())
+            throw new \Exception('Subscription is not on grace period.');
+
+        $subscription->ends_at = null;
+
+        $subscription->save();
     }
 
     /**

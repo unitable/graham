@@ -2,18 +2,23 @@
 
 namespace Unitable\Graham\Subscription;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
 use Unitable\Graham\Engine\Engine;
 use Unitable\Graham\Method\Method;
+use Unitable\Graham\Plan\Plan;
+use Unitable\Graham\Plan\PlanPrice;
 
 /**
  * @property int $id
  * @property string $status
  * @property int $subscription_id
  * @property Subscription $subscription
+ * @property Plan $plan
+ * @property PlanPrice $plan_price
  * @property Collection|SubscriptionInvoiceDiscount[] $discounts
  * @property float $discount
  * @property float $subtotal
@@ -28,10 +33,41 @@ class SubscriptionInvoice extends Model {
     const PROCESSING = 'processing';
     const OPEN = 'open';
     const PAID = 'paid';
-    const OVERDUE = 'overdue';
     const CANCELED = 'canceled';
 
     protected $guarded = [];
+
+    /**
+     * Determine whether invoice is active or not.
+     *
+     * @return bool
+     */
+    public function active(): bool {
+        return in_array($this->status, [
+            static::PROCESSING, static::OPEN
+        ]);
+    }
+
+    /**
+     * Query only active invoices.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeActive(Builder $query): Builder {
+        return $query->whereIn('status', [
+            static::PROCESSING, static::OPEN
+        ]);
+    }
+
+    /**
+     * Determine whether invoice is paid or not.
+     *
+     * @return bool
+     */
+    public function paid(): bool {
+        return $this->status === static::PAID;
+    }
 
     /**
      * Get the subscription model.
@@ -40,6 +76,24 @@ class SubscriptionInvoice extends Model {
      */
     public function subscription(): BelongsTo {
         return $this->belongsTo(Subscription::class);
+    }
+
+    /**
+     * Get the invoice plan model.
+     *
+     * @return BelongsTo
+     */
+    public function plan(): BelongsTo {
+        return $this->belongsTo(Plan::class);
+    }
+
+    /**
+     * Get the plan price model.
+     *
+     * @return BelongsTo
+     */
+    public function plan_price(): BelongsTo {
+        return $this->belongsTo(PlanPrice::class);
     }
 
     /**

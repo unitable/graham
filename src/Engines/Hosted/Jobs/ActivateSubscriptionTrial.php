@@ -34,7 +34,7 @@ class ActivateSubscriptionTrial {
         if ($this->subscription->trial_ends_at !== null) {
             $this->subscription->update([
                 'status' => Subscription::TRIAL,
-                'ends_at' => $this->subscription->trial_ends_at
+                'period_ends_at' => $this->subscription->trial_ends_at
             ]);
         }
     }

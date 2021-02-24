@@ -22,10 +22,10 @@ class CreateSubscriptionsTable extends Migration {
             $table->unsignedBigInteger('method_id')->nullable();
             $table->string('engine');
             $table->timestamp('trial_ends_at')->nullable();
+            $table->timestamp('period_ends_at')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->timestamps();
 
-            $table->index('method');
             $table->index('engine');
         });
     }

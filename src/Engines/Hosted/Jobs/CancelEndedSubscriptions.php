@@ -6,7 +6,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Unitable\Graham\Engines\Hosted\HostedEngine;
 use Unitable\Graham\Subscription\Subscription;
 
-class CreateRenewalInvoices {
+class CancelEndedSubscriptions {
 
     use Dispatchable;
 
@@ -31,27 +31,12 @@ class CreateRenewalInvoices {
      */
     public function handle() {
         $subscriptions = $this->engine->subscriptions()->active()
-            ->whereDate('period_ends_at', '<=', now()->addDays(7))
-            ->withoutFlag('renewal_invoice')
+            ->whereDate('ends_at', '<=', now())
             ->get();
 
         /** @var Subscription $subscription */
         foreach ($subscriptions as $subscription) {
-            $invoice = $subscription->newInvoice()->create();
-
-            $subscription->flags()->create([
-                'type' => 'renewal_invoice',
-                'model_type' => get_class($invoice),
-                'model_id' => $invoice->id
-            ]);
-
-            if ($subscription->onTrial()) {
-                $subscription->flags()->create([
-                    'type' => 'trial_invoice',
-                    'model_type' => get_class($invoice),
-                    'model_id' => $invoice->id
-                ]);
-            }
+            $subscription->cancel();
         }
     }
 

@@ -5,8 +5,9 @@ namespace Unitable\Graham\Engines\Hosted\Jobs;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Unitable\Graham\Engines\Hosted\HostedEngine;
 use Unitable\Graham\Subscription\Subscription;
+use Unitable\Graham\Subscription\SubscriptionInvoice;
 
-class CreateRenewalInvoices {
+class ProcessEndedSubscriptionsPeriods {
 
     use Dispatchable;
 
@@ -31,26 +32,19 @@ class CreateRenewalInvoices {
      */
     public function handle() {
         $subscriptions = $this->engine->subscriptions()->active()
-            ->whereDate('period_ends_at', '<=', now()->addDays(7))
-            ->withoutFlag('renewal_invoice')
+            ->whereDate('period_ends_at', '<=', now())
             ->get();
 
         /** @var Subscription $subscription */
         foreach ($subscriptions as $subscription) {
-            $invoice = $subscription->newInvoice()->create();
-
-            $subscription->flags()->create([
-                'type' => 'renewal_invoice',
-                'model_type' => get_class($invoice),
-                'model_id' => $invoice->id
-            ]);
-
-            if ($subscription->onTrial()) {
-                $subscription->flags()->create([
-                    'type' => 'trial_invoice',
-                    'model_type' => get_class($invoice),
-                    'model_id' => $invoice->id
-                ]);
+            if ($invoice = $subscription->renewal_invoice) {
+                if ($invoice->paid()) {
+                    RenewSubscriptionWithPaidInvoice::dispatch($subscription, $invoice);
+                } else if (!$subscription->markedForCancellation()) {
+                    $subscription->markAsIncomplete();
+                }
+            } else {
+                $subscription->cancel();
             }
         }
     }

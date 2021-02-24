@@ -5,7 +5,6 @@ namespace Unitable\Graham\Observers;
 use Unitable\Graham\Subscription\SubscriptionInvoice;
 use Unitable\Graham\Events\SubscriptionInvoiceCreated;
 use Unitable\Graham\Events\SubscriptionInvoiceOpen;
-use Unitable\Graham\Events\SubscriptionInvoiceOverdue;
 use Unitable\Graham\Events\SubscriptionInvoicePaid;
 use Unitable\Graham\Events\SubscriptionInvoiceUpdated;
 
@@ -38,9 +37,6 @@ class SubscriptionInvoiceObserver {
                 case SubscriptionInvoice::PAID:
                     SubscriptionInvoicePaid::dispatch($invoice);
                 break;
-                case SubscriptionInvoice::OVERDUE:
-                    SubscriptionInvoiceOverdue::dispatch($invoice);
-                    break;
             }
         }
     }

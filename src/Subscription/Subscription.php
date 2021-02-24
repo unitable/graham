@@ -24,13 +24,15 @@ use Unitable\Graham\Plan\PlanPrice;
  * @property int $plan_price_id
  * @property float $price
  * @property float $renewal_price
+ * @property SubscriptionInvoice|null $renewal_invoice
  * @property Collection|SubscriptionDiscount[] $discounts
  * @property float $discount
  * @property Method $method
  * @property Engine $engine
  * @property Collection|SubscriptionInvoice[] $invoices
- * @property Carbon|null $ends_at
  * @property Carbon|null $trial_ends_at
+ * @property Carbon|null $period_ends_at
+ * @property Carbon|null $ends_at
  * @property Collection|SubscriptionFlag[] $flags
  */
 class Subscription extends Model {
@@ -45,6 +47,7 @@ class Subscription extends Model {
 
     protected $casts = [
         'trial_ends_at' => 'datetime',
+        'period_ends_at' => 'datetime',
         'ends_at' => 'datetime'
     ];
 
@@ -112,6 +115,17 @@ class Subscription extends Model {
     }
 
     /**
+     * Mark the subscription as incomplete.
+     *
+     * @return void
+     */
+    public function markAsIncomplete() {
+        $this->update([
+            'status' => static::INCOMPLETE
+        ]);
+    }
+
+    /**
      * Determine whether subscription is incomplete or not.
      *
      * @return bool
@@ -147,6 +161,15 @@ class Subscription extends Model {
      */
     public function scopeOnGracePeriod(Builder $query): Builder {
         // TODO: implement method.
+    }
+
+    /**
+     * Determine whether the subscription was marked for cancellation or not.
+     *
+     * @return bool
+     */
+    public function markedForCancellation(): bool {
+        return $this->ends_at !== null;
     }
 
     /**
@@ -262,6 +285,20 @@ class Subscription extends Model {
      */
     public function getRenewalPriceAttribute(): float {
         return $this->price - $this->discount;
+    }
+
+    /**
+     * Get the subscription renewal invoice.
+     *
+     * @return SubscriptionInvoice|null
+     */
+    public function getRenewalInvoiceAttribute(): ?SubscriptionInvoice {
+        /** @var SubscriptionFlag|null $flag */
+        $flag = $this->flags()
+            ->where('type', 'renewal_invoice')
+            ->first();
+
+        return $flag ? $flag->model : null;
     }
 
     /**

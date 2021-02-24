@@ -17,7 +17,7 @@ class GrahamServiceProvider extends ServiceProvider {
      * @return void
      */
     public function register() {
-        $this->mergeConfigFrom(__DIR__.'/../config/config.php', 'graham');
+        $this->mergeConfigFrom(__DIR__.'/../config/graham.php.php', 'graham');
 
         $this->app->singleton('graham', function () {
             return new Graham;
@@ -36,27 +36,27 @@ class GrahamServiceProvider extends ServiceProvider {
         // $this->loadTranslationsFrom(__DIR__.'/../resources/lang', 'graham');
         // $this->loadViewsFrom(__DIR__.'/../resources/views', 'graham');
          $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
-        // $this->loadRoutesFrom(__DIR__.'/routes.php');
+        // $this->loadRoutesFrom(__DIR__ . '/routes/graham.php');
 
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__.'/../config/config.php' => config_path('graham.php'),
-            ], 'config');
+                __DIR__.'/../config/graham.php' => config_path('graham.php'),
+            ], 'graham-config');
 
             // Publishing the views.
             /*$this->publishes([
                 __DIR__.'/../resources/views' => resource_path('views/vendor/graham'),
-            ], 'views');*/
+            ], 'graham-views');*/
 
             // Publishing assets.
             /*$this->publishes([
                 __DIR__.'/../resources/assets' => public_path('vendor/graham'),
-            ], 'assets');*/
+            ], 'graham-assets');*/
 
             // Publishing the translation files.
             /*$this->publishes([
                 __DIR__.'/../resources/lang' => resource_path('lang/vendor/graham'),
-            ], 'lang');*/
+            ], 'graham-lang');*/
 
             // Registering package commands.
              $this->commands([

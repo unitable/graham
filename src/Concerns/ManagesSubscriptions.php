@@ -29,7 +29,17 @@ trait ManagesSubscriptions {
      * @return Collection|Subscription[]
      */
     public function subscriptions() {
-        return $this->hasMany(Subscription::class, 'user_id');
+        return $this->hasMany(Subscription::class, 'user_id')
+            ->orderBy('id', 'desc');
+    }
+
+    /**
+     * Get the first ongoing subscription model.
+     *
+     * @return Subscription|null
+     */
+    public function subscription(): ?Subscription {
+        return $this->subscriptions()->ongoing()->first();
     }
 
     /**

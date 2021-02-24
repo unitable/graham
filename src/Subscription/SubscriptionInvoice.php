@@ -70,6 +70,17 @@ class SubscriptionInvoice extends Model {
     }
 
     /**
+     * Cancel the invoice.
+     *
+     * @return void
+     */
+    public function cancel() {
+        $this->status = SubscriptionInvoice::CANCELED;
+
+        $this->save();
+    }
+
+    /**
      * Get the subscription model.
      *
      * @return BelongsTo

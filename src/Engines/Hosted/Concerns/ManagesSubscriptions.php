@@ -41,9 +41,7 @@ trait ManagesSubscriptions {
 
             /** @var SubscriptionInvoice $invoice */
             foreach ($subscription->invoices()->ongoing()->get() as $invoice) {
-                $invoice->status = SubscriptionInvoice::CANCELED;
-
-                $invoice->save(); // Dispatch individual events.
+                $invoice->cancel();
             }
         }
 
@@ -71,12 +69,13 @@ trait ManagesSubscriptions {
      * @param array $data
      */
     public function modifySubscription(Subscription $subscription, array $data) {
-        // TODO: Implement modifySubscription() method.
-
         /*
          * Não trocar de método/engine se houver alguma fatura aberta. Se precisar, migrar a engine da fatura também.
+         * Se criar uma nova vai ficar aparecendo duplicado pro cliente.
          * Colisão com as jobs automáticas, como o handle de incomplete verifica só se a fatura é HostedEngine mas não a assinatura...
          */
+
+        throw new \LogicException('Not implemented.');
     }
 
 }

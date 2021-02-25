@@ -22,7 +22,7 @@ class HostedEngineServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Bootstrap the package services.
+     * Bootstrap the application services.
      *
      * @return void
      */

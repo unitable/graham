@@ -11,7 +11,7 @@ use Unitable\Graham\Subscription\Subscription;
  * @property string $code
  * @property float $value
  */
-class Coupon extends Model implements DiscountMethod {
+final class Coupon extends Model implements DiscountMethod {
 
     protected $guarded = [];
 

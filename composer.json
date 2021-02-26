@@ -1,6 +1,7 @@
 {
     "name": "unitable/graham",
     "description": "Subscriptions package for Laravel",
+    "version": "0.1.0",
     "keywords": [
         "unitable",
         "graham"

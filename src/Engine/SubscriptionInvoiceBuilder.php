@@ -17,12 +17,31 @@ abstract class SubscriptionInvoiceBuilder implements Contracts\SubscriptionInvoi
     protected Subscription $subscription;
 
     /**
+     * The invoice status.
+     *
+     * @var string
+     */
+    protected string $status;
+
+    /**
      * SubscriptionInvoiceBuilder constructor.
      *
      * @param Subscription $subscription
      */
     public function __construct(Subscription $subscription) {
         $this->subscription = $subscription;
+    }
+
+    /**
+     * Set the invoice status.
+     *
+     * @param string $status
+     * @return $this
+     */
+    public function status(string $status) {
+        $this->status = $status;
+
+        return $this;
     }
 
     /**
@@ -40,7 +59,7 @@ abstract class SubscriptionInvoiceBuilder implements Contracts\SubscriptionInvoi
 
         /** @var SubscriptionInvoice $invoice */
         $invoice = $subscription->invoices()->create([
-            'status' => SubscriptionInvoice::PROCESSING,
+            'status' => $this->status ?? SubscriptionInvoice::PROCESSING,
             'user_id' => $subscription->user_id,
             'plan_id' => $subscription->plan_id,
             'plan_price_id' => $subscription->plan_price_id,

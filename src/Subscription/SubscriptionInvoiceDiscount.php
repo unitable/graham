@@ -2,7 +2,7 @@
 
 namespace Unitable\Graham\Subscription;
 
-use Illuminate\Database\Eloquent\Model;
+use Unitable\Graham\Support\Model;
 
 /**
  * @property string $discount_type

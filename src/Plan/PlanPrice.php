@@ -2,7 +2,7 @@
 
 namespace Unitable\Graham\Plan;
 
-use Illuminate\Database\Eloquent\Model;
+use Unitable\Graham\Support\Model;
 
 /**
  * @property int $id

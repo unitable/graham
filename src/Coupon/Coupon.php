@@ -2,7 +2,7 @@
 
 namespace Unitable\Graham\Coupon;
 
-use Illuminate\Database\Eloquent\Model;
+use Unitable\Graham\Support\Model;
 use Unitable\Graham\Contracts\DiscountMethod;
 use Unitable\Graham\Subscription\Subscription;
 
@@ -28,10 +28,14 @@ final class Coupon extends Model implements DiscountMethod {
     /**
      * Get the discount for a subscription.
      *
-     * @param Subscription $subscription
+     * @param Subscription|float $object
      * @return float
      */
-    public function getDiscount(Subscription $subscription): float {
-        return $subscription->price * ($this->value / 100);
+    public function getDiscount($object): float {
+        $price = $object instanceof Subscription ?
+            $object->price : $object;
+
+        return $price * ($this->value / 100);
     }
+
 }

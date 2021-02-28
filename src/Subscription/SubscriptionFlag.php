@@ -2,7 +2,7 @@
 
 namespace Unitable\Graham\Subscription;
 
-use Illuminate\Database\Eloquent\Model;
+use Unitable\Graham\Support\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Support\Carbon;
 

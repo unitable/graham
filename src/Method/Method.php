@@ -2,7 +2,7 @@
 
 namespace Unitable\Graham\Method;
 
-use Illuminate\Database\Eloquent\Model;
+use Unitable\Graham\Support\Model;
 use Unitable\Graham\Engine\Engine;
 
 /**

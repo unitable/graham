@@ -1,8 +1,13 @@
 <?php
 
-/*
- * You can place your custom package configuration in here.
- */
 return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Billable Model
+    |--------------------------------------------------------------------------
+    */
+
+    'model' => env('GRAHAM_MODEL', \App\Models\User::class),
 
 ];

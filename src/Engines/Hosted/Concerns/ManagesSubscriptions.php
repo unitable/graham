@@ -36,7 +36,7 @@ trait ManagesSubscriptions {
         if (!$subscription->ends_at)
             $subscription->ends_at = $subscription->period_ends_at ?? now();
 
-        if ($subscription->onTrial() || $subscription->ends_at->lessThanOrEqualTo(now())) {
+        if ($subscription->ends_at->lessThanOrEqualTo(now())) {
             $subscription->status = Subscription::CANCELED;
 
             /** @var SubscriptionInvoice $invoice */

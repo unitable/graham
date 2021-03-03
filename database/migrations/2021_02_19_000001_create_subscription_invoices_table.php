@@ -26,6 +26,8 @@ class CreateSubscriptionInvoicesTable extends Migration {
             $table->decimal('currency_rate', 12, 10);
             $table->decimal('subtotal', 20, 2);
             $table->decimal('total', 20, 2);
+            $table->timestamp('due_at')->nullable();
+            $table->timestamp('paid_at')->nullable();
             $table->timestamps();
         });
     }

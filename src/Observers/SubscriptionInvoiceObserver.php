@@ -35,6 +35,9 @@ class SubscriptionInvoiceObserver {
                     SubscriptionInvoiceOpen::dispatch($invoice);
                     break;
                 case SubscriptionInvoice::PAID:
+                    $invoice->paid_at = now();
+                    $invoice->saveQuietly();
+
                     SubscriptionInvoicePaid::dispatch($invoice);
                 break;
             }

@@ -25,6 +25,7 @@ use Unitable\Graham\Plan\PlanPrice;
  * @property string $currency_code
  * @property float $currency_rate
  * @property float $total
+ * @property string|null $payment_url
  * @property Method $method
  * @property Engine $engine
  */
@@ -36,6 +37,11 @@ class SubscriptionInvoice extends Model {
     const CANCELED = 'canceled';
 
     protected $guarded = [];
+
+    protected $dates = [
+        'due_at',
+        'paid_at'
+    ];
 
     /**
      * Determine whether invoice is ongoing or not.
@@ -58,6 +64,15 @@ class SubscriptionInvoice extends Model {
         return $query->whereIn('status', [
             static::PROCESSING, static::OPEN
         ]);
+    }
+
+    /**
+     * Determine whether invoice is open or not.
+     *
+     * @return bool
+     */
+    public function open(): bool {
+        return $this->status === static::OPEN;
     }
 
     /**
@@ -129,6 +144,15 @@ class SubscriptionInvoice extends Model {
         }
 
         return $total;
+    }
+
+    /**
+     * Get the payment url.
+     *
+     * @return string|null
+     */
+    public function getPaymentUrlAttribute(): ?string {
+        return $this->method->getInvoicePaymentUrl($this);
     }
 
     /**

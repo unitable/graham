@@ -57,9 +57,11 @@ abstract class SubscriptionInvoiceBuilder implements Contracts\SubscriptionInvoi
         $subtotal = $subscription->price;
         $total = $subtotal - $subscription->discount;
 
+        $status = $this->status ?? SubscriptionInvoice::PROCESSING;
+
         /** @var SubscriptionInvoice $invoice */
         $invoice = $subscription->invoices()->create([
-            'status' => $this->status ?? SubscriptionInvoice::PROCESSING,
+            'status' => $status,
             'user_id' => $subscription->user_id,
             'plan_id' => $subscription->plan_id,
             'plan_price_id' => $subscription->plan_price_id,
@@ -69,7 +71,9 @@ abstract class SubscriptionInvoiceBuilder implements Contracts\SubscriptionInvoi
             'currency_code' => $currency->code,
             'currency_rate' => $currency->rate,
             'subtotal' => $subtotal,
-            'total' => $total
+            'total' => $total,
+            'due_at' =>  $subscription->period_ends_at,
+            'paid_at' => $status === SubscriptionInvoice::PAID ? now() : null
         ]);
 
         foreach ($subscription->discounts as $discount) {

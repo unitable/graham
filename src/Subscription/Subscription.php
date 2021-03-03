@@ -367,6 +367,17 @@ class Subscription extends Model {
     }
 
     /**
+     * Get the subscription latest invoices models.
+     *
+     * @return HasMany
+     */
+    public function latest_invoices(): HasMany {
+        return $this->invoices()
+            ->orderBy('due_at', 'DESC')
+            ->orderBy('id', 'DESC');
+    }
+
+    /**
      * Create a new invoice.
      *
      * @return SubscriptionInvoiceBuilder

@@ -3,6 +3,7 @@
 namespace Unitable\Graham\Subscription;
 
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Carbon;
 use Unitable\Graham\Support\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -25,6 +26,8 @@ use Unitable\Graham\Plan\PlanPrice;
  * @property string $currency_code
  * @property float $currency_rate
  * @property float $total
+ * @property Carbon|null $due_at
+ * @property Carbon|null $paid_at
  * @property string|null $payment_url
  * @property Method $method
  * @property Engine $engine

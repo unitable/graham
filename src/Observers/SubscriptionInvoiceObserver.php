@@ -18,6 +18,8 @@ class SubscriptionInvoiceObserver {
      */
     public function created(SubscriptionInvoice $invoice) {
         SubscriptionInvoiceCreated::dispatch($invoice);
+
+        $this->dispatchStatuses($invoice);
     }
 
     /**
@@ -30,17 +32,27 @@ class SubscriptionInvoiceObserver {
         SubscriptionInvoiceUpdated::dispatch($invoice);
 
         if ($invoice->isDirty('status')) {
-            switch ($invoice->status) {
-                case SubscriptionInvoice::OPEN:
-                    SubscriptionInvoiceOpen::dispatch($invoice);
-                    break;
-                case SubscriptionInvoice::PAID:
-                    $invoice->paid_at = now();
-                    $invoice->saveQuietly();
+            $this->dispatchStatuses($invoice);
+        }
+    }
 
-                    SubscriptionInvoicePaid::dispatch($invoice);
+    /**
+     * Dispatch the statuses events.
+     *
+     * @param SubscriptionInvoice $invoice
+     * @return void
+     */
+    protected function dispatchStatuses(SubscriptionInvoice $invoice) {
+        switch ($invoice->status) {
+            case SubscriptionInvoice::OPEN:
+                SubscriptionInvoiceOpen::dispatch($invoice);
                 break;
-            }
+            case SubscriptionInvoice::PAID:
+                $invoice->paid_at = now();
+                $invoice->saveQuietly();
+
+                SubscriptionInvoicePaid::dispatch($invoice);
+            break;
         }
     }
 

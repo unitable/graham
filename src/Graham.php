@@ -2,7 +2,26 @@
 
 namespace Unitable\Graham;
 
+use Illuminate\Container\Container;
+use Unitable\Graham\Contracts\CurrencyResolver;
+
 class Graham {
+
+    /**
+     * The IoC container.
+     *
+     * @var Container
+     */
+    protected Container $container;
+
+    /**
+     * Graham constructor.
+     *
+     * @param Container $container
+     */
+    public function __construct(Container $container) {
+        $this->container = $container;
+    }
 
     /**
      * Find the billable user.
@@ -20,16 +39,13 @@ class Graham {
      * Get the active currency or a given one.
      *
      * @param string|null $code
-     * @return \stdClass
+     * @return mixed
      */
-    public function currency(?string $code = null): \stdClass {
-        // TODO
+    public function currency(?string $code = null) {
+        /** @var CurrencyResolver $resolver */
+        $resolver = $this->container->make(CurrencyResolver::class);
 
-        $obj = new \stdClass;
-        $obj->code = 'BRL';
-        $obj->rate = 1.0000000000;
-
-        return $obj;
+        return $resolver->resolve($code);
     }
 
 }

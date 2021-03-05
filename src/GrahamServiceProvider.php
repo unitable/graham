@@ -4,10 +4,12 @@ namespace Unitable\Graham;
 
 use Illuminate\Support\ServiceProvider;
 use Unitable\Graham\Console\Commands\CronjobCommand;
+use Unitable\Graham\Contracts\CurrencyResolver as Currency;
 use Unitable\Graham\Observers\SubscriptionInvoiceObserver;
 use Unitable\Graham\Observers\SubscriptionObserver;
 use Unitable\Graham\Subscription\Subscription;
 use Unitable\Graham\Subscription\SubscriptionInvoice;
+use Unitable\Graham\Support\CurrencyResolver;
 
 class GrahamServiceProvider extends ServiceProvider {
 
@@ -19,8 +21,11 @@ class GrahamServiceProvider extends ServiceProvider {
     public function register() {
         $this->mergeConfigFrom(__DIR__.'/../config/graham.php', 'graham');
 
-        $this->app->singleton('graham', function () {
-            return new Graham;
+        $this->app->singleton('graham', function($app) {
+            return new Graham($app);
+        });
+        $this->app->singletonIf(Currency::class, function() {
+            return new CurrencyResolver;
         });
     }
 

@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/graham.iml" filepath="$PROJECT_DIR$/.idea/graham.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../graham-gerencianet/.idea/graham-gerencianet.iml" filepath="$PROJECT_DIR$/../graham-gerencianet/.idea/graham-gerencianet.iml" />
       <module fileurl="file://$PROJECT_DIR$/../graham-pagarme/.idea/graham-pagarme.iml" filepath="$PROJECT_DIR$/../graham-pagarme/.idea/graham-pagarme.iml" />
       <module fileurl="file://$PROJECT_DIR$/../graham-stripe/.idea/graham-stripe.iml" filepath="$PROJECT_DIR$/../graham-stripe/.idea/graham-stripe.iml" />
     </modules>

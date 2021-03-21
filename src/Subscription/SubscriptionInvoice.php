@@ -18,6 +18,7 @@ use Unitable\Graham\Plan\PlanPrice;
  * @property string $status
  * @property int $subscription_id
  * @property Subscription $subscription
+ * @property int $user_id
  * @property Plan $plan
  * @property PlanPrice $plan_price
  * @property Collection|SubscriptionInvoiceDiscount[] $discounts
@@ -37,6 +38,8 @@ class SubscriptionInvoice extends Model {
     const PROCESSING = 'processing';
     const OPEN = 'open';
     const PAID = 'paid';
+    const PAST_DUE = 'past_due';
+    const EXPIRED = 'expired';
     const CANCELED = 'canceled';
 
     protected $guarded = [];
@@ -53,7 +56,7 @@ class SubscriptionInvoice extends Model {
      */
     public function ongoing(): bool {
         return in_array($this->status, [
-            static::PROCESSING, static::OPEN
+            static::PROCESSING, static::OPEN, static::PAST_DUE
         ]);
     }
 
@@ -65,7 +68,7 @@ class SubscriptionInvoice extends Model {
      */
     public function scopeOngoing(Builder $query): Builder {
         return $query->whereIn('status', [
-            static::PROCESSING, static::OPEN
+            static::PROCESSING, static::OPEN, static::PAST_DUE
         ]);
     }
 

@@ -4,6 +4,7 @@ namespace Unitable\Graham\Subscription;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
+use Unitable\Graham\Contracts\InvoicePaymentUrlResolver;
 use Unitable\Graham\Support\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -82,6 +83,18 @@ class SubscriptionInvoice extends Model {
     }
 
     /**
+     * Query only open invoices.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeOpen(Builder $query): Builder {
+        return $query->whereIn('status', [
+            static::OPEN
+        ]);
+    }
+
+    /**
      * Determine whether invoice is paid or not.
      *
      * @return bool
@@ -153,12 +166,36 @@ class SubscriptionInvoice extends Model {
     }
 
     /**
+     * Get the payment info.
+     *
+     * @return array|null
+     */
+    public function getPaymentInfo(): ?array {
+        return $this->method->getInvoicePaymentInfo($this);
+    }
+
+    /**
      * Get the payment url.
      *
      * @return string|null
      */
+    public function getPaymentUrl(): ?string {
+        if (app()->has(InvoicePaymentUrlResolver::class)) {
+            $resolver = app()->make(InvoicePaymentUrlResolver::class);
+
+            return $resolver->resolve($this);
+        }
+
+        return null;
+    }
+
+    /**
+     * Resolve the payment url attribute.
+     *
+     * @return string|null
+     */
     public function getPaymentUrlAttribute(): ?string {
-        return $this->method->getInvoicePaymentUrl($this);
+        return $this->getPaymentUrl();
     }
 
     /**

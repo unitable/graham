@@ -13,12 +13,12 @@ use Unitable\Graham\Engine\Engine;
 abstract class Method extends Model {
 
     /**
-     * Get an invoice payment url.
+     * Get an invoice payment info.
      *
      * @param SubscriptionInvoice $invoice
-     * @return string|null
+     * @return array|null
      */
-    public function getInvoicePaymentUrl(SubscriptionInvoice $invoice): ?string {
+    public function getInvoicePaymentInfo(SubscriptionInvoice $invoice): ?array {
         return null;
     }
 

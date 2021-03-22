@@ -121,7 +121,6 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="graham-stripe" />
-    <orderEntry type="module" module-name="graham-pagarme" />
     <orderEntry type="module" module-name="graham-gerencianet" />
   </component>
 </module>

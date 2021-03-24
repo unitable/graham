@@ -46,7 +46,7 @@ class SubscriptionInvoiceObserver {
         switch ($invoice->status) {
             case SubscriptionInvoice::OPEN:
                 SubscriptionInvoiceOpen::dispatch($invoice);
-                break;
+            break;
             case SubscriptionInvoice::PAID:
                 $invoice->paid_at = now();
                 $invoice->saveQuietly();

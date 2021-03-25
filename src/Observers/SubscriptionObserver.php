@@ -2,6 +2,7 @@
 
 namespace Unitable\Graham\Observers;
 
+use Illuminate\Support\Facades\Log;
 use Unitable\Graham\Events\SubscriptionActivated;
 use Unitable\Graham\Events\SubscriptionCanceled;
 use Unitable\Graham\Events\SubscriptionCancelRequested;

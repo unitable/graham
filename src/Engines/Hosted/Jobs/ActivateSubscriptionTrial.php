@@ -2,12 +2,14 @@
 
 namespace Unitable\Graham\Engines\Hosted\Jobs;
 
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Queue\SerializesModels;
 use Unitable\Graham\Subscription\Subscription;
 
-class ActivateSubscriptionTrial {
+class ActivateSubscriptionTrial implements ShouldQueue {
 
-    use Dispatchable;
+    use Dispatchable, SerializesModels;
 
     /**
      * The job subscription.

@@ -31,7 +31,7 @@ class SubscriptionInvoiceObserver {
     public function updated(SubscriptionInvoice $invoice) {
         SubscriptionInvoiceUpdated::dispatch($invoice);
 
-        if ($invoice->wasChanged('status')) {
+        if ($invoice->isDirty('status')) {
             $this->dispatchStatuses($invoice);
         }
     }

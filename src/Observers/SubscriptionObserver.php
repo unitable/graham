@@ -2,7 +2,6 @@
 
 namespace Unitable\Graham\Observers;
 
-use Illuminate\Support\Facades\Log;
 use Unitable\Graham\Events\SubscriptionActivated;
 use Unitable\Graham\Events\SubscriptionCanceled;
 use Unitable\Graham\Events\SubscriptionCancelRequested;
@@ -35,12 +34,12 @@ class SubscriptionObserver {
     public function updated(Subscription $subscription) {
         SubscriptionUpdated::dispatch($subscription);
 
-        if ($subscription->wasChanged('status')) {
+        if ($subscription->isDirty('status')) {
             $this->dispatchStatuses($subscription);
         }
 
-        if ($subscription->wasChanged('ends_at')) {
-            if ($subscription->getOriginal('ends_at') === null) {
+        if ($subscription->isDirty('ends_at')) {
+            if ($subscription->active() && $subscription->getOriginal('ends_at') === null) {
                 SubscriptionCancelRequested::dispatch($subscription);
             }
         }

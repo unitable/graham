@@ -35,11 +35,11 @@ class SubscriptionObserver {
     public function updated(Subscription $subscription) {
         SubscriptionUpdated::dispatch($subscription);
 
-        if ($subscription->isDirty('status')) {
+        if ($subscription->wasChanged('status')) {
             $this->dispatchStatuses($subscription);
         }
 
-        if ($subscription->isDirty('ends_at')) {
+        if ($subscription->wasChanged('ends_at')) {
             if ($subscription->getOriginal('ends_at') === null) {
                 SubscriptionCancelRequested::dispatch($subscription);
             }

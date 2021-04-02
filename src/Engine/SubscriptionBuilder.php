@@ -120,7 +120,9 @@ abstract class SubscriptionBuilder implements Contracts\SubscriptionBuilder {
             'method' => get_class($this->method),
             'method_id' => $this->method->id,
             'engine' => get_class($this->method->engine),
-            'trial_ends_at' => $this->resolveTrialEndsAt()
+            'trial_ends_at' => $this->resolveTrialEndsAt(),
+            'period_ends_at' => null,
+            'ends_at' => null
         ]);
 
         if (isset($this->coupon)) {

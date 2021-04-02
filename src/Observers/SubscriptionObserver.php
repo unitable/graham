@@ -38,8 +38,10 @@ class SubscriptionObserver {
             $this->dispatchStatuses($subscription);
         }
 
-        if ($subscription->isDirty('ends_at')) {
-            if ($subscription->active() && $subscription->getOriginal('ends_at') === null) {
+        if ($subscription->isDirty('ends_at')
+            && $subscription->getOriginal('ends_at') === null
+        ) {
+            if ($subscription->active()) {
                 SubscriptionCancelRequested::dispatch($subscription);
             }
         }

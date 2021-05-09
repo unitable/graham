@@ -49,6 +49,26 @@ trait ManagesSubscriptions {
     }
 
     /**
+     * Cancel a subscription immediately.
+     *
+     * @param Subscription $subscription
+     */
+    public function cancelSubscriptionImmediately(Subscription $subscription) {
+        if ($subscription->canceled())
+            throw new \Exception('Subscription was already canceled.');
+
+        $subscription->ends_at = now();
+        $subscription->status = Subscription::CANCELED;
+
+        /** @var SubscriptionInvoice $invoice */
+        foreach ($subscription->invoices()->ongoing()->get() as $invoice) {
+            $invoice->cancel();
+        }
+
+        $subscription->save();
+    }
+
+    /**
      * Resume a subscription.
      *
      * @param Subscription $subscription

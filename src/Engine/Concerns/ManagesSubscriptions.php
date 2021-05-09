@@ -40,6 +40,14 @@ trait ManagesSubscriptions {
     public abstract function cancelSubscription(Subscription $subscription);
 
     /**
+     * Cancel a subscription immediately.
+     *
+     * @param Subscription $subscription
+     * @return void
+     */
+    public abstract function cancelSubscriptionImmediately(Subscription $subscription);
+
+    /**
      * Resume a subscription.
      *
      * @param Subscription $subscription

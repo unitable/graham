@@ -234,6 +234,15 @@ class Subscription extends Model {
     }
 
     /**
+     * Cancel the subscription immediately.
+     *
+     * @return void
+     */
+    public function cancelImmediately() {
+        $this->engine->cancelSubscriptionImmediately($this);
+    }
+
+    /**
      * Resume the subscription.
      *
      * @return void

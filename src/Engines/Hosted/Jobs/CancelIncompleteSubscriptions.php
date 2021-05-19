@@ -31,7 +31,7 @@ class CancelIncompleteSubscriptions {
      */
     public function handle() {
         $subscriptions = $this->engine->subscriptions()->incomplete()
-            ->whereDate('period_ends_at', '<=', now()->subDays(7))
+            ->whereDate('period_ends_at', '<=', now()->subDays(2))
             ->get();
 
         /** @var Subscription $subscription */

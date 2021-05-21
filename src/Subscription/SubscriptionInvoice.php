@@ -89,9 +89,7 @@ class SubscriptionInvoice extends Model {
      * @return Builder
      */
     public function scopeOpen(Builder $query): Builder {
-        return $query->whereIn('status', [
-            static::OPEN
-        ]);
+        return $query->where('status', static::OPEN);
     }
 
     /**
@@ -101,6 +99,16 @@ class SubscriptionInvoice extends Model {
      */
     public function paid(): bool {
         return $this->status === static::PAID;
+    }
+
+    /**
+     * Query only paid invoices.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopePaid(Builder $query): Builder {
+        return $query->where('status', static::PAID);
     }
 
     /**
@@ -121,6 +129,32 @@ class SubscriptionInvoice extends Model {
      */
     public function subscription(): BelongsTo {
         return $this->belongsTo(Subscription::class);
+    }
+
+    /**
+     * Filter the invoices by its related subscription status.
+     *
+     * @param Builder $query
+     * @param string|array $status
+     * @return Builder
+     */
+    public function scopeWhereSubscriptionStatus(Builder $query, $status): Builder {
+        return $query->whereHas('subscription', function(Builder $query) use($status) {
+            if (is_array($status)) {
+                $query->whereIn('status', $status);
+            } else {
+                $query->where('status', $status);
+            }
+        });
+    }
+
+    /**
+     * Determine if is the subscription renewal invoice.
+     *
+     * @return bool
+     */
+    public function markedAsRenewalInvoice(): bool {
+        return $this->subscription->renewal_invoice->id === $this->id;
     }
 
     /**

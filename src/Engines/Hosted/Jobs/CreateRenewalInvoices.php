@@ -30,28 +30,16 @@ class CreateRenewalInvoices {
      * @return void
      */
     public function handle() {
+        $range = config('graham.renewal_days');
+
         $subscriptions = $this->engine->subscriptions()->active()
-            ->whereDate('period_ends_at', '<=', now()->addDays(7))
+            ->whereDate('period_ends_at', '<=', now()->addDays($range))
             ->withoutFlag('renewal_invoice')
             ->get();
 
         /** @var Subscription $subscription */
         foreach ($subscriptions as $subscription) {
-            $invoice = $subscription->newInvoice()->create();
-
-            $subscription->flags()->create([
-                'type' => 'renewal_invoice',
-                'model_type' => get_class($invoice),
-                'model_id' => $invoice->id
-            ]);
-
-            if ($subscription->onTrial()) {
-                $subscription->flags()->create([
-                    'type' => 'trial_invoice',
-                    'model_type' => get_class($invoice),
-                    'model_id' => $invoice->id
-                ]);
-            }
+            $subscription->newRenewalInvoice()->create();
         }
     }
 

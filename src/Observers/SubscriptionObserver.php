@@ -6,24 +6,14 @@ use Unitable\Graham\Events\SubscriptionActivated;
 use Unitable\Graham\Events\SubscriptionCanceled;
 use Unitable\Graham\Events\SubscriptionCancelRequested;
 use Unitable\Graham\Events\SubscriptionCreated;
+use Unitable\Graham\Events\SubscriptionIntended;
+use Unitable\Graham\Events\SubscriptionStarted;
 use Unitable\Graham\Events\SubscriptionTrialEnded;
 use Unitable\Graham\Events\SubscriptionTrialStarted;
 use Unitable\Graham\Events\SubscriptionUpdated;
 use Unitable\Graham\Subscription\Subscription;
 
 class SubscriptionObserver {
-
-    /**
-     * Handle the subscription "created" event.
-     *
-     * @param Subscription $subscription
-     * @return void
-     */
-    public function created(Subscription $subscription) {
-        SubscriptionCreated::dispatch($subscription);
-
-        $this->dispatchStatuses($subscription);
-    }
 
     /**
      * Handle the subscription "updated" event.
@@ -54,15 +44,28 @@ class SubscriptionObserver {
      * @return void
      */
     protected function dispatchStatuses(Subscription $subscription) {
-        if ($subscription->getOriginal('status') === Subscription::TRIAL) {
+        $original = $subscription->getOriginal('status');
+
+        if ($original === Subscription::TRIAL) {
+            // Dispatch even if is not active to track all trial ends.
             SubscriptionTrialEnded::dispatch($subscription);
         }
 
         switch ($subscription->status) {
+            case Subscription::PROCESSING:
+                SubscriptionCreated::dispatch($subscription);
+            break;
+            case Subscription::INTENT:
+                SubscriptionIntended::dispatch($subscription);
+            break;
             case Subscription::TRIAL:
                 SubscriptionTrialStarted::dispatch($subscription);
             break;
             case Subscription::ACTIVE:
+                if ($original === Subscription::INTENT) {
+                    SubscriptionStarted::dispatch($subscription);
+                }
+
                 SubscriptionActivated::dispatch($subscription);
             break;
             case Subscription::CANCELED:

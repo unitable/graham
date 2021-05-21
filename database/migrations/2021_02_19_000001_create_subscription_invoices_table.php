@@ -14,7 +14,7 @@ class CreateSubscriptionInvoicesTable extends Migration {
     public function up() {
         Schema::create('subscription_invoices', function (Blueprint $table) {
             $table->id();
-            $table->string('status');
+            $table->string('status')->nullable();
             $table->unsignedBigInteger('subscription_id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('plan_id');

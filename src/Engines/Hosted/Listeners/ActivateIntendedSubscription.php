@@ -6,7 +6,7 @@ use Unitable\Graham\Engines\Hosted\HostedEngine;
 use Unitable\Graham\Engines\Hosted\Jobs\ActivateInvoicePeriod;
 use Unitable\Graham\Events\SubscriptionInvoicePaid;
 
-class RenewIncompleteSubscription {
+class ActivateIntendedSubscription {
 
     /**
      * Handle the event.
@@ -20,7 +20,7 @@ class RenewIncompleteSubscription {
         if ($invoice->engine instanceof HostedEngine) {
             $subscription = $invoice->subscription;
 
-            if (!$subscription->incomplete()) return;
+            if (!$subscription->intent()) return;
 
             if ($invoice->markedAsRenewalInvoice()) {
                 ActivateInvoicePeriod::dispatch($subscription, $invoice);

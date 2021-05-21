@@ -6,7 +6,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Unitable\Graham\Engines\Hosted\HostedEngine;
 use Unitable\Graham\Subscription\Subscription;
 
-class ProcessEndedSubscriptionsPeriods {
+class ProcessExpiredSubscriptionsIntents {
 
     use Dispatchable;
 
@@ -30,21 +30,13 @@ class ProcessEndedSubscriptionsPeriods {
      * @return void
      */
     public function handle() {
-        $subscriptions = $this->engine->subscriptions()->active()
+        $subscriptions = $this->engine->subscriptions()->intent()
             ->whereDate('period_ends_at', '<=', now())
             ->get();
 
         /** @var Subscription $subscription */
         foreach ($subscriptions as $subscription) {
-            if ($invoice = $subscription->renewal_invoice) {
-                if ($invoice->paid()) {
-                    ActivateInvoicePeriod::dispatch($subscription, $invoice);
-                } else {
-                    $subscription->markAsIncomplete();
-                }
-            } else {
-                $subscription->cancel();
-            }
+            $subscription->markAsIncomplete();
         }
     }
 

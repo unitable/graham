@@ -5,8 +5,9 @@ namespace Unitable\Graham\Engine\Contracts;
 use Unitable\Graham\Coupon\Coupon;
 use Unitable\Graham\Plan\PlanPrice;
 use Unitable\Graham\Subscription\Subscription;
+use Unitable\Graham\Support\BuilderInterface;
 
-interface SubscriptionBuilder {
+interface SubscriptionBuilder extends BuilderInterface {
 
     /**
      * Set the subscription trial days.

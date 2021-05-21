@@ -2,7 +2,6 @@
 
 namespace Unitable\Graham\Method;
 
-use Unitable\Graham\Subscription\SubscriptionInvoice;
 use Unitable\Graham\Support\Model;
 use Unitable\Graham\Engine\Engine;
 
@@ -12,15 +11,8 @@ use Unitable\Graham\Engine\Engine;
  */
 abstract class Method extends Model {
 
-    /**
-     * Get an invoice payment info.
-     *
-     * @param SubscriptionInvoice $invoice
-     * @return array|null
-     */
-    public function getInvoicePaymentInfo(SubscriptionInvoice $invoice): ?array {
-        return null;
-    }
+    use Concerns\ManagesInvoices;
+    use Concerns\ManagesMigration;
 
     /**
      * Get the engine.

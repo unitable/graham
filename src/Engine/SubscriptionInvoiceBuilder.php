@@ -5,9 +5,9 @@ namespace Unitable\Graham\Engine;
 use Unitable\Graham\GrahamFacade as Graham;
 use Unitable\Graham\Subscription\Subscription;
 use Unitable\Graham\Subscription\SubscriptionInvoice;
-use Unitable\Graham\Subscription\SubscriptionInvoiceDiscount;
+use Unitable\Graham\Support\Builder;
 
-abstract class SubscriptionInvoiceBuilder implements Contracts\SubscriptionInvoiceBuilder {
+abstract class SubscriptionInvoiceBuilder extends Builder implements Contracts\SubscriptionInvoiceBuilder {
 
     /**
      * The invoice subscription.
@@ -63,7 +63,7 @@ abstract class SubscriptionInvoiceBuilder implements Contracts\SubscriptionInvoi
 
         /** @var SubscriptionInvoice $invoice */
         $invoice = $subscription->invoices()->create([
-            'status' => $status,
+            'status' => null,
             'user_id' => $subscription->user_id,
             'plan_id' => $subscription->plan_id,
             'plan_price_id' => $subscription->plan_price_id,
@@ -87,6 +87,12 @@ abstract class SubscriptionInvoiceBuilder implements Contracts\SubscriptionInvoi
                 'notes' => $discount->notes
             ]);
         }
+
+        $invoice->update([
+            'status' => SubscriptionInvoice::PROCESSING
+        ]);
+
+        $this->dispatchCreated($invoice);
 
         return $invoice;
     }

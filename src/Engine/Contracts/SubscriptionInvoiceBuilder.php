@@ -3,8 +3,9 @@
 namespace Unitable\Graham\Engine\Contracts;
 
 use Unitable\Graham\Subscription\SubscriptionInvoice;
+use Unitable\Graham\Support\BuilderInterface;
 
-interface SubscriptionInvoiceBuilder {
+interface SubscriptionInvoiceBuilder extends BuilderInterface {
 
     /**
      * Set the status.

@@ -14,7 +14,7 @@ class CreateSubscriptionsTable extends Migration {
     public function up() {
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
-            $table->string('status');
+            $table->string('status')->nullable();
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('plan_id');
             $table->unsignedBigInteger('plan_price_id');

@@ -3,7 +3,7 @@
 namespace Unitable\Graham\Engines\Hosted\Listeners;
 
 use Unitable\Graham\Engines\Hosted\HostedEngine;
-use Unitable\Graham\Engines\Hosted\Jobs\ActivateSubscriptionTrial;
+use Unitable\Graham\Engines\Hosted\Jobs\ProcessSubscription;
 use Unitable\Graham\Events\SubscriptionCreated;
 
 class StartProcessingSubscription {
@@ -18,7 +18,7 @@ class StartProcessingSubscription {
         $subscription = $event->subscription;
 
         if ($subscription->engine instanceof HostedEngine) {
-            ActivateSubscriptionTrial::dispatch($subscription);
+            ProcessSubscription::dispatch($subscription);
         }
     }
 

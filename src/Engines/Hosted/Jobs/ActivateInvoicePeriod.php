@@ -7,7 +7,7 @@ use Unitable\Graham\Engines\Hosted\HostedEngine;
 use Unitable\Graham\Subscription\Subscription;
 use Unitable\Graham\Subscription\SubscriptionInvoice;
 
-class RenewSubscriptionWithPaidInvoice {
+class ActivateInvoicePeriod {
 
     use Dispatchable;
 
@@ -51,16 +51,19 @@ class RenewSubscriptionWithPaidInvoice {
      */
     public function handle() {
         $new_days = $this->invoice->plan_price->duration; // Use invoice instead subscription.
-        $period_ends_at = $this->subscription->period_ends_at->addDays($new_days);
+
+        $period_ends_at = $this->subscription->period_ends_at;
+        $renews_at = $this->subscription->intent() ?
+            now()->addDays($new_days) : $period_ends_at->addDays($new_days);
 
         $this->subscription->update([
             'status' => Subscription::ACTIVE,
-            'period_ends_at' => $period_ends_at
+            'period_ends_at' => $renews_at
         ]);
 
-        $this->subscription->flags()
-            ->where('type', 'renewal_invoice')
-            ->delete();
+        if ($this->invoice->markedAsRenewalInvoice()) {
+            $this->subscription->detachRenewalInvoice();
+        }
     }
 
 }

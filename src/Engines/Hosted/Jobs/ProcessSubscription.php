@@ -2,14 +2,12 @@
 
 namespace Unitable\Graham\Engines\Hosted\Jobs;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Queue\SerializesModels;
 use Unitable\Graham\Subscription\Subscription;
 
-class ActivateSubscriptionTrial implements ShouldQueue {
+class ProcessSubscription {
 
-    use Dispatchable, SerializesModels;
+    use Dispatchable;
 
     /**
      * The job subscription.
@@ -33,11 +31,22 @@ class ActivateSubscriptionTrial implements ShouldQueue {
      * @return void
      */
     public function handle() {
-        if ($this->subscription->trial_ends_at !== null) {
+        if ($this->subscription->trial_ends_at) {
             $this->subscription->update([
                 'status' => Subscription::TRIAL,
                 'period_ends_at' => $this->subscription->trial_ends_at
             ]);
+
+            $this->subscription->newTrialInvoice()->create();
+        } else {
+            $limit = config('graham.intent_days');
+
+            $this->subscription->update([
+                'status' => Subscription::INTENT,
+                'period_ends_at' => now()->addDays($limit)
+            ]);
+
+            $this->subscription->newIntentInvoice()->create();
         }
     }
 

@@ -9,9 +9,9 @@ use Unitable\Graham\Method\Method;
 use Unitable\Graham\Plan\Plan;
 use Unitable\Graham\Plan\PlanPrice;
 use Unitable\Graham\Subscription\Subscription;
-use Unitable\Graham\Subscription\SubscriptionDiscount;
+use Unitable\Graham\Support\Builder;
 
-abstract class SubscriptionBuilder implements Contracts\SubscriptionBuilder {
+abstract class SubscriptionBuilder extends Builder implements Contracts\SubscriptionBuilder {
 
     /**
      * The subscription owner.
@@ -112,8 +112,9 @@ abstract class SubscriptionBuilder implements Contracts\SubscriptionBuilder {
      * @return Subscription
      */
     public function create(): Subscription {
+        /** @var Subscription $subscription */
         $subscription = Subscription::create([
-            'status' => Subscription::PROCESSING,
+            'status' => null,
             'user_id' => $this->owner->id,
             'plan_id' => $this->plan->id,
             'plan_price_id' => $this->plan_price->id,
@@ -126,13 +127,18 @@ abstract class SubscriptionBuilder implements Contracts\SubscriptionBuilder {
         ]);
 
         if (isset($this->coupon)) {
-            SubscriptionDiscount::create([
-                'subscription_id' => $subscription->id,
+            $subscription->discounts()->create([
                 'discount_type' => get_class($this->coupon),
                 'discount_id' => $this->coupon->id,
                 'value' => $this->coupon->getDiscount($subscription)
             ]);
         }
+
+        $subscription->update([
+            'status' => Subscription::PROCESSING
+        ]);
+
+        $this->dispatchCreated($subscription);
 
         return $subscription;
     }

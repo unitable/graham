@@ -6,5 +6,6 @@ abstract class Engine {
 
     use Concerns\ManagesSubscriptions;
     use Concerns\ManagesInvoices;
+    use Concerns\ManagesMigration;
 
 }

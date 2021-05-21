@@ -38,6 +38,7 @@ use Unitable\Graham\Plan\PlanPrice;
 class Subscription extends Model {
 
     const PROCESSING = 'processing';
+    const INTENT = 'intent';
     const TRIAL = 'trial';
     const ACTIVE = 'active';
     const INCOMPLETE = 'incomplete';
@@ -58,7 +59,7 @@ class Subscription extends Model {
      */
     public function ongoing(): bool {
         return in_array($this->status, [
-            static::PROCESSING, static::TRIAL, static::ACTIVE, static::INCOMPLETE
+            static::PROCESSING, static::INTENT, static::TRIAL, static::ACTIVE, static::INCOMPLETE
         ]);
     }
 
@@ -70,8 +71,27 @@ class Subscription extends Model {
      */
     public function scopeOngoing(Builder $query): Builder {
         return $query->whereIn('status', [
-            static::PROCESSING, static::TRIAL, static::ACTIVE, static::INCOMPLETE
+            static::PROCESSING, static::INTENT, static::TRIAL, static::ACTIVE, static::INCOMPLETE
         ]);
+    }
+
+    /**
+     * Determine if the subscription is a intent.
+     *
+     * @return bool
+     */
+    public function intent(): bool {
+        return $this->status === static::INTENT;
+    }
+
+    /**
+     * Query only intent subscriptions.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeIntent(Builder $query): Builder {
+        return $query->where('status', static::INTENT);
     }
 
     /**
@@ -335,12 +355,7 @@ class Subscription extends Model {
      * @return SubscriptionInvoice|null
      */
     public function getRenewalInvoiceAttribute(): ?SubscriptionInvoice {
-        /** @var SubscriptionFlag|null $flag */
-        $flag = $this->flags()
-            ->where('type', 'renewal_invoice')
-            ->first();
-
-        return $flag ? $flag->model : null;
+        return $this->getInvoiceByFlag('renewal_invoice');
     }
 
     /**
@@ -354,6 +369,31 @@ class Subscription extends Model {
 
         return !$this->method_id ? $method :
             $method->find($this->method_id) ?? $method;
+    }
+
+    /**
+     * Migrate the subscription method.
+     *
+     * @return void
+     */
+    public function migrateTo(Method $method, array $data = []) {
+        $this->method->migrateDown($this, $data);
+
+        $this->method_type = get_class($method);
+        $this->method_id = $method->id;
+        $this->engine = get_class($method->engine);
+
+        $this->method->migrateUp($this, $data);
+
+        $this->save();
+
+        if ($renewal_invoice = $this->renewal_invoice) {
+            $renewal_invoice->cancel();
+
+            $this->detachRenewalInvoice();
+
+            $this->newRenewalInvoice()->create();
+        }
     }
 
     /**
@@ -396,6 +436,89 @@ class Subscription extends Model {
     }
 
     /**
+     * Create a new renewal invoice.
+     *
+     * @return SubscriptionInvoiceBuilder
+     */
+    public function newRenewalInvoice(): SubscriptionInvoiceBuilder {
+        $builder = $this->newInvoice();
+
+        $builder->created(function(SubscriptionInvoice $invoice) {
+            $this->flags()->create([
+                'type' => 'renewal_invoice',
+                'model_type' => get_class($invoice),
+                'model_id' => $invoice->id
+            ]);
+        });
+
+        return $builder;
+    }
+
+    /**
+     * Create a new trial invoice.
+     *
+     * @return SubscriptionInvoiceBuilder
+     */
+    public function newTrialInvoice(): SubscriptionInvoiceBuilder {
+        $builder = $this->newRenewalInvoice();
+
+        $builder->created(function(SubscriptionInvoice $invoice) {
+            $this->flags()->create([
+                'type' => 'trial_invoice',
+                'model_type' => get_class($invoice),
+                'model_id' => $invoice->id
+            ]);
+        });
+
+        return $builder;
+    }
+
+    /**
+     * Create a new intent invoice.
+     *
+     * @return SubscriptionInvoiceBuilder
+     */
+    public function newIntentInvoice(): SubscriptionInvoiceBuilder {
+        $builder = $this->newRenewalInvoice();
+
+        $builder->created(function(SubscriptionInvoice $invoice) {
+            $this->flags()->create([
+                'type' => 'intent_invoice',
+                'model_type' => get_class($invoice),
+                'model_id' => $invoice->id
+            ]);
+        });
+
+        return $builder;
+    }
+
+    /**
+     * Get an invoice by its subscription flag.
+     *
+     * @param string $flag
+     * @return SubscriptionInvoice|null
+     */
+    public function getInvoiceByFlag(string $flag): ?SubscriptionInvoice {
+        /** @var SubscriptionFlag|null $flag */
+        $flag = $this->flags()
+            ->where('type', $flag)
+            ->first();
+
+        return $flag ? $flag->model : null;
+    }
+
+    /**
+     * Detach a renewal invoice if exists.
+     *
+     * @return void
+     */
+    public function detachRenewalInvoice() {
+        $this->flags()
+            ->where('type', 'renewal_invoice')
+            ->delete();
+    }
+
+    /**
      * Get the flags models.
      *
      * @return HasMany
@@ -428,6 +551,22 @@ class Subscription extends Model {
     }
 
     /**
+     * Query only subscriptions with a given flag model.
+     *
+     * @param Builder $query
+     * @param string $type
+     * @param Model $model
+     * @return Builder
+     */
+    public function scopeWithFlagModel(Builder $query, string $type, Model $model): Builder {
+        return $query->whereHas('flags', function(Builder $query) use($type, $model) {
+            $query->where('type', $type);
+            $query->where('model_type', get_class($model));
+            $query->where('model_id', $model->{$model->primaryKey});
+        });
+    }
+
+    /**
      * Query only subscriptions without a given flag.
      *
      * @param Builder $query
@@ -437,6 +576,22 @@ class Subscription extends Model {
     public function scopeWithoutFlag(Builder $query, string $type): Builder {
         return $query->whereDoesntHave('flags', function(Builder $query) use($type) {
             $query->where('type', $type);
+        });
+    }
+
+    /**
+     * Query only subscriptions without a given flag model.
+     *
+     * @param Builder $query
+     * @param string $type
+     * @param Model $model
+     * @return Builder
+     */
+    public function scopeWithoutFlagModel(Builder $query, string $type, Model $model): Builder {
+        return $query->whereDoesntHave('flags', function(Builder $query) use($type, $model) {
+            $query->where('type', $type);
+            $query->where('model_type', get_class($model));
+            $query->where('model_id', $model->{$model->primaryKey});
         });
     }
 

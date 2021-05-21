@@ -11,18 +11,6 @@ use Unitable\Graham\Events\SubscriptionInvoiceUpdated;
 class SubscriptionInvoiceObserver {
 
     /**
-     * Handle the invoice "created" event.
-     *
-     * @param SubscriptionInvoice $invoice
-     * @return void
-     */
-    public function created(SubscriptionInvoice $invoice) {
-        SubscriptionInvoiceCreated::dispatch($invoice);
-
-        $this->dispatchStatuses($invoice);
-    }
-
-    /**
      * Handle the invoice "updated" event.
      *
      * @param SubscriptionInvoice $invoice
@@ -44,6 +32,9 @@ class SubscriptionInvoiceObserver {
      */
     protected function dispatchStatuses(SubscriptionInvoice $invoice) {
         switch ($invoice->status) {
+            case SubscriptionInvoice::PROCESSING:
+                SubscriptionInvoiceCreated::dispatch($invoice);
+            break;
             case SubscriptionInvoice::OPEN:
                 SubscriptionInvoiceOpen::dispatch($invoice);
             break;

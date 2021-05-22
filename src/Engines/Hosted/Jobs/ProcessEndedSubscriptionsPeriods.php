@@ -43,7 +43,7 @@ class ProcessEndedSubscriptionsPeriods {
             if ($invoice = $subscription->renewal_invoice) {
                 if ($invoice->paid()) {
                     ActivateInvoicePeriod::dispatch($subscription, $invoice);
-                } else {
+                } else if (!$subscription->markedForCancellation()) {
                     $subscription->markAsIncomplete();
                 }
             } else {

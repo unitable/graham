@@ -1,12 +1,11 @@
 <?php
 
-namespace Unitable\Graham\Events;
+namespace Unitable\Graham\Engines\Hosted\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Unitable\Graham\Subscription\Subscription;
-use Unitable\Graham\Subscription\SubscriptionInvoice;
 
-class BeforeActivateInvoicePeriod {
+class AfterProcessSubscription {
 
     use Dispatchable;
 
@@ -18,20 +17,12 @@ class BeforeActivateInvoicePeriod {
     public Subscription $subscription;
 
     /**
-     * The event invoice.
-     *
-     * @var SubscriptionInvoice
-     */
-    public SubscriptionInvoice $invoice;
-
-    /**
      * Create a new event instance.
      *
      * @param Subscription $subscription
      */
-    public function __construct(Subscription $subscription, SubscriptionInvoice $invoice) {
+    public function __construct(Subscription $subscription) {
         $this->subscription = $subscription;
-        $this->invoice = $invoice;
     }
 
 }

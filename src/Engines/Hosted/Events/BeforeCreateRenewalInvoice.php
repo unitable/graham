@@ -1,11 +1,11 @@
 <?php
 
-namespace Unitable\Graham\Events;
+namespace Unitable\Graham\Engines\Hosted\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Unitable\Graham\Subscription\Subscription;
 
-class BeforeProcessExpiredSubscriptionIntent {
+class BeforeCreateRenewalInvoice {
 
     use Dispatchable;
 

@@ -3,8 +3,8 @@
 namespace Unitable\Graham\Engines\Hosted\Jobs;
 
 use Illuminate\Foundation\Bus\Dispatchable;
-use Unitable\Graham\Events\AfterProcessSubscription;
-use Unitable\Graham\Events\BeforeProcessSubscription;
+use Unitable\Graham\Engines\Hosted\Events\AfterProcessSubscription;
+use Unitable\Graham\Engines\Hosted\Events\BeforeProcessSubscription;
 use Unitable\Graham\Subscription\Subscription;
 
 class ProcessSubscription {

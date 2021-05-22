@@ -5,6 +5,7 @@ namespace Unitable\Graham\Subscription;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Unitable\Graham\Contracts\InvoicePaymentUrlResolver;
+use Unitable\Graham\Support\Flags\HasFlags;
 use Unitable\Graham\Support\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -42,6 +43,8 @@ class SubscriptionInvoice extends Model {
     const PAST_DUE = 'past_due';
     const EXPIRED = 'expired';
     const CANCELED = 'canceled';
+
+    use HasFlags;
 
     protected $guarded = [];
 
@@ -253,6 +256,15 @@ class SubscriptionInvoice extends Model {
      */
     public function getEngineAttribute(string $abstract): Engine {
         return app()->make($abstract);
+    }
+
+    /**
+     * Get the flags models.
+     *
+     * @return HasMany
+     */
+    public function flags(): HasMany {
+        return $this->hasMany(SubscriptionInvoiceFlag::class);
     }
 
 }

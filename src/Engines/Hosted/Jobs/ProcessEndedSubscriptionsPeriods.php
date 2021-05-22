@@ -4,8 +4,8 @@ namespace Unitable\Graham\Engines\Hosted\Jobs;
 
 use Illuminate\Foundation\Bus\Dispatchable;
 use Unitable\Graham\Engines\Hosted\HostedEngine;
-use Unitable\Graham\Events\AfterProcessEndedSubscriptionPeriod;
-use Unitable\Graham\Events\BeforeProcessEndedSubscriptionPeriod;
+use Unitable\Graham\Engines\Hosted\Events\AfterProcessEndedSubscriptionPeriod;
+use Unitable\Graham\Engines\Hosted\Events\BeforeProcessEndedSubscriptionPeriod;
 use Unitable\Graham\Subscription\Subscription;
 
 class ProcessEndedSubscriptionsPeriods {

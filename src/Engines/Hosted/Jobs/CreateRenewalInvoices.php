@@ -4,8 +4,8 @@ namespace Unitable\Graham\Engines\Hosted\Jobs;
 
 use Illuminate\Foundation\Bus\Dispatchable;
 use Unitable\Graham\Engines\Hosted\HostedEngine;
-use Unitable\Graham\Events\AfterCreateRenewalInvoice;
-use Unitable\Graham\Events\BeforeCreateRenewalInvoice;
+use Unitable\Graham\Engines\Hosted\Events\AfterCreateRenewalInvoice;
+use Unitable\Graham\Engines\Hosted\Events\BeforeCreateRenewalInvoice;
 use Unitable\Graham\Subscription\Subscription;
 
 class CreateRenewalInvoices {

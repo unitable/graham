@@ -3,6 +3,7 @@
 namespace Unitable\Graham\Subscription;
 
 use Illuminate\Database\Eloquent\Builder;
+use Unitable\Graham\Support\Flags\HasFlags;
 use Unitable\Graham\Support\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -43,6 +44,8 @@ class Subscription extends Model {
     const ACTIVE = 'active';
     const INCOMPLETE = 'incomplete';
     const CANCELED = 'canceled';
+
+    use HasFlags;
 
     protected $guarded = [];
 
@@ -536,74 +539,6 @@ class Subscription extends Model {
      */
     public function flags(): HasMany {
         return $this->hasMany(SubscriptionFlag::class);
-    }
-
-    /**
-     * Determine whether the subscription has a given flag or not.
-     *
-     * @param string $type
-     * @return bool
-     */
-    public function hasFlag(string $type): bool {
-        return $this->flags()->where('type', $type)->exists();
-    }
-
-    /**
-     * Query only subscriptions with a given flag.
-     *
-     * @param Builder $query
-     * @param string $type
-     * @return Builder
-     */
-    public function scopeWithFlag(Builder $query, string $type): Builder {
-        return $query->whereHas('flags', function(Builder $query) use($type) {
-            $query->where('type', $type);
-        });
-    }
-
-    /**
-     * Query only subscriptions with a given flag model.
-     *
-     * @param Builder $query
-     * @param string $type
-     * @param Model $model
-     * @return Builder
-     */
-    public function scopeWithFlagModel(Builder $query, string $type, Model $model): Builder {
-        return $query->whereHas('flags', function(Builder $query) use($type, $model) {
-            $query->where('type', $type);
-            $query->where('model_type', get_class($model));
-            $query->where('model_id', $model->{$model->primaryKey});
-        });
-    }
-
-    /**
-     * Query only subscriptions without a given flag.
-     *
-     * @param Builder $query
-     * @param string $type
-     * @return Builder
-     */
-    public function scopeWithoutFlag(Builder $query, string $type): Builder {
-        return $query->whereDoesntHave('flags', function(Builder $query) use($type) {
-            $query->where('type', $type);
-        });
-    }
-
-    /**
-     * Query only subscriptions without a given flag model.
-     *
-     * @param Builder $query
-     * @param string $type
-     * @param Model $model
-     * @return Builder
-     */
-    public function scopeWithoutFlagModel(Builder $query, string $type, Model $model): Builder {
-        return $query->whereDoesntHave('flags', function(Builder $query) use($type, $model) {
-            $query->where('type', $type);
-            $query->where('model_type', get_class($model));
-            $query->where('model_id', $model->{$model->primaryKey});
-        });
     }
 
 }

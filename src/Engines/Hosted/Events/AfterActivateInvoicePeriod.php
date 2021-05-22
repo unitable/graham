@@ -1,12 +1,12 @@
 <?php
 
-namespace Unitable\Graham\Events;
+namespace Unitable\Graham\Engines\Hosted\Events;
 
 use Illuminate\Foundation\Events\Dispatchable;
 use Unitable\Graham\Subscription\Subscription;
 use Unitable\Graham\Subscription\SubscriptionInvoice;
 
-class AfterCreateRenewalInvoice {
+class AfterActivateInvoicePeriod {
 
     use Dispatchable;
 

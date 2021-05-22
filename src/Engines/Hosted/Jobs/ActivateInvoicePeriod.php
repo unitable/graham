@@ -4,8 +4,8 @@ namespace Unitable\Graham\Engines\Hosted\Jobs;
 
 use Illuminate\Foundation\Bus\Dispatchable;
 use Unitable\Graham\Engines\Hosted\HostedEngine;
-use Unitable\Graham\Events\AfterActivateInvoicePeriod;
-use Unitable\Graham\Events\BeforeActivateInvoicePeriod;
+use Unitable\Graham\Engines\Hosted\Events\AfterActivateInvoicePeriod;
+use Unitable\Graham\Engines\Hosted\Events\BeforeActivateInvoicePeriod;
 use Unitable\Graham\Subscription\Subscription;
 use Unitable\Graham\Subscription\SubscriptionInvoice;
 

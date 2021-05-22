@@ -18,6 +18,7 @@ class CreateSubscriptionFlagsTable extends Migration {
             $table->string('type');
             $table->string('model_type')->nullable();
             $table->unsignedBigInteger('model_id')->nullable();
+            $table->text('data')->nullable();
             $table->timestamp('expires_at')->nullable();
             $table->timestamps();
 

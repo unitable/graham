@@ -207,6 +207,17 @@ class Subscription extends Model {
     }
 
     /**
+     * Determine whether the subscription was marked for renewal or not.
+     *
+     * @return bool
+     */
+    public function markedForRenewal(): bool {
+        $invoice = $this->renewal_invoice;
+
+        return $invoice->paid();
+    }
+
+    /**
      * Determine whether the subscription was marked for cancellation or not.
      *
      * @return bool

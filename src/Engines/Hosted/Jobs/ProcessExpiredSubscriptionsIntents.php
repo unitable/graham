@@ -4,6 +4,8 @@ namespace Unitable\Graham\Engines\Hosted\Jobs;
 
 use Illuminate\Foundation\Bus\Dispatchable;
 use Unitable\Graham\Engines\Hosted\HostedEngine;
+use Unitable\Graham\Events\AfterProcessExpiredSubscriptionIntent;
+use Unitable\Graham\Events\BeforeProcessExpiredSubscriptionIntent;
 use Unitable\Graham\Subscription\Subscription;
 
 class ProcessExpiredSubscriptionsIntents {
@@ -36,7 +38,11 @@ class ProcessExpiredSubscriptionsIntents {
 
         /** @var Subscription $subscription */
         foreach ($subscriptions as $subscription) {
+            BeforeProcessExpiredSubscriptionIntent::dispatch($subscription);
+
             $subscription->markAsIncomplete();
+
+            AfterProcessExpiredSubscriptionIntent::dispatch($subscription);
         }
     }
 

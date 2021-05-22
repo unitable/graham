@@ -4,6 +4,8 @@ namespace Unitable\Graham\Engines\Hosted\Jobs;
 
 use Illuminate\Foundation\Bus\Dispatchable;
 use Unitable\Graham\Engines\Hosted\HostedEngine;
+use Unitable\Graham\Events\AfterCreateRenewalInvoice;
+use Unitable\Graham\Events\BeforeCreateRenewalInvoice;
 use Unitable\Graham\Subscription\Subscription;
 
 class CreateRenewalInvoices {
@@ -39,7 +41,11 @@ class CreateRenewalInvoices {
 
         /** @var Subscription $subscription */
         foreach ($subscriptions as $subscription) {
-            $subscription->newRenewalInvoice()->create();
+            BeforeCreateRenewalInvoice::dispatch($subscription);
+
+            $invoice = $subscription->newRenewalInvoice()->create();
+
+            AfterCreateRenewalInvoice::dispatch($subscription, $invoice);
         }
     }
 

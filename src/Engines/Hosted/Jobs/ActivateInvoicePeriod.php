@@ -4,6 +4,8 @@ namespace Unitable\Graham\Engines\Hosted\Jobs;
 
 use Illuminate\Foundation\Bus\Dispatchable;
 use Unitable\Graham\Engines\Hosted\HostedEngine;
+use Unitable\Graham\Events\AfterActivateInvoicePeriod;
+use Unitable\Graham\Events\BeforeActivateInvoicePeriod;
 use Unitable\Graham\Subscription\Subscription;
 use Unitable\Graham\Subscription\SubscriptionInvoice;
 
@@ -50,6 +52,8 @@ class ActivateInvoicePeriod {
      * @return void
      */
     public function handle() {
+        BeforeActivateInvoicePeriod::dispatch($this->subscription, $this->invoice);
+
         $new_days = $this->invoice->plan_price->duration; // Use invoice instead subscription.
 
         $period_ends_at = $this->subscription->period_ends_at;
@@ -64,6 +68,8 @@ class ActivateInvoicePeriod {
         if ($this->invoice->markedAsRenewalInvoice()) {
             $this->subscription->detachRenewalInvoice();
         }
+
+        AfterActivateInvoicePeriod::dispatch($this->subscription, $this->invoice);
     }
 
 }

@@ -38,10 +38,10 @@ class HostedEngineServiceProvider extends ServiceProvider {
     protected function registerEvents() {
         Event::listen(Events\CronjobFired::class, function() {
             /* 1º */ Jobs\CreateRenewalInvoices::dispatch();
-            /* 2º */ Jobs\CancelEndedSubscriptions::dispatch();
-            /* 3º */ Jobs\ProcessExpiredSubscriptionsIntents::dispatch();
-            /* 4º */ Jobs\ProcessEndedSubscriptionsPeriods::dispatch();
-            /* 5º */ Jobs\CancelIncompleteSubscriptions::dispatch();
+            /* 2º */ Jobs\ProcessExpiredSubscriptionsIntents::dispatch();
+            /* 3º */ Jobs\ProcessEndedSubscriptionsPeriods::dispatch();
+            /* 4º */ Jobs\CancelIncompleteSubscriptions::dispatch();
+            /* 5º */ Jobs\CancelEndedSubscriptions::dispatch();
         });
         Event::listen(Events\SubscriptionCreated::class, Listeners\StartProcessingSubscription::class);
         Event::listen(Events\SubscriptionInvoicePaid::class, Listeners\ActivateIntendedSubscription::class);

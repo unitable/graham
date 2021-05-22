@@ -3,6 +3,8 @@
 namespace Unitable\Graham\Engines\Hosted\Jobs;
 
 use Illuminate\Foundation\Bus\Dispatchable;
+use Unitable\Graham\Events\AfterProcessSubscription;
+use Unitable\Graham\Events\BeforeProcessSubscription;
 use Unitable\Graham\Subscription\Subscription;
 
 class ProcessSubscription {
@@ -31,6 +33,8 @@ class ProcessSubscription {
      * @return void
      */
     public function handle() {
+        BeforeProcessSubscription::dispatch($this->subscription);
+
         if ($this->subscription->trial_ends_at) {
             $this->subscription->update([
                 'status' => Subscription::TRIAL,
@@ -48,6 +52,8 @@ class ProcessSubscription {
 
             $this->subscription->newIntentInvoice()->create();
         }
+
+        AfterProcessSubscription::dispatch($this->subscription);
     }
 
 }

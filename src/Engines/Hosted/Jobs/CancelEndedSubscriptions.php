@@ -4,6 +4,8 @@ namespace Unitable\Graham\Engines\Hosted\Jobs;
 
 use Illuminate\Foundation\Bus\Dispatchable;
 use Unitable\Graham\Engines\Hosted\HostedEngine;
+use Unitable\Graham\Events\AfterCancelEndedSubscription;
+use Unitable\Graham\Events\BeforeCancelEndedSubscription;
 use Unitable\Graham\Subscription\Subscription;
 
 class CancelEndedSubscriptions {
@@ -36,7 +38,11 @@ class CancelEndedSubscriptions {
 
         /** @var Subscription $subscription */
         foreach ($subscriptions as $subscription) {
+            BeforeCancelEndedSubscription::dispatch($subscription);
+
             $subscription->cancel();
+
+            AfterCancelEndedSubscription::dispatch($subscription);
         }
     }
 

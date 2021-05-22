@@ -4,6 +4,8 @@ namespace Unitable\Graham\Engines\Hosted\Jobs;
 
 use Illuminate\Foundation\Bus\Dispatchable;
 use Unitable\Graham\Engines\Hosted\HostedEngine;
+use Unitable\Graham\Events\AfterProcessEndedSubscriptionPeriod;
+use Unitable\Graham\Events\BeforeProcessEndedSubscriptionPeriod;
 use Unitable\Graham\Subscription\Subscription;
 
 class ProcessEndedSubscriptionsPeriods {
@@ -36,6 +38,8 @@ class ProcessEndedSubscriptionsPeriods {
 
         /** @var Subscription $subscription */
         foreach ($subscriptions as $subscription) {
+            BeforeProcessEndedSubscriptionPeriod::dispatch($subscription);
+
             if ($invoice = $subscription->renewal_invoice) {
                 if ($invoice->paid()) {
                     ActivateInvoicePeriod::dispatch($subscription, $invoice);
@@ -45,6 +49,8 @@ class ProcessEndedSubscriptionsPeriods {
             } else {
                 $subscription->cancel();
             }
+
+            AfterProcessEndedSubscriptionPeriod::dispatch($subscription);
         }
     }
 

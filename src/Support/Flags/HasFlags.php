@@ -69,6 +69,27 @@ trait HasFlags {
     }
 
     /**
+     * Remove a flag from the model.
+     *
+     * @param string $type
+     * @param Model|null $model
+     */
+    public function removeFlag(string $type, ?Model $model = null) {
+        $query = $this->flags()
+            ->where('type', $type);
+
+        if ($model) {
+            $query->where('model_type', get_class($model));
+
+            if ($model_id = $model->{$model->getKey()}) {
+                $query->where('model_id', $model_id);
+            }
+        }
+
+        $query->delete();
+    }
+
+    /**
      * Query only models with a given flag.
      *
      * @param Builder $query

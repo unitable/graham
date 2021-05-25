@@ -15,7 +15,7 @@ class CreateSubscriptionFlagsTable extends Migration {
         Schema::create('subscription_flags', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('subscription_id');
-            $table->string('type');
+            $table->string('type')->index();
             $table->string('model_type')->nullable();
             $table->unsignedBigInteger('model_id')->nullable();
             $table->text('data')->nullable();

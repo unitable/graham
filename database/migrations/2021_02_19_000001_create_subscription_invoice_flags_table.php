@@ -16,7 +16,7 @@ class CreateSubscriptionInvoiceFlagsTable extends Migration {
             $table->id();
             $table->unsignedBigInteger('subscription_invoice_id');
             $table->unsignedBigInteger('subscription_id');
-            $table->string('type')->index();
+            $table->string('type');
             $table->string('model_type')->nullable();
             $table->unsignedBigInteger('model_id')->nullable();
             $table->text('data')->nullable();

@@ -33,27 +33,33 @@ class ProcessSubscription {
      * @return void
      */
     public function handle() {
-        BeforeProcessSubscription::dispatch($this->subscription);
+        $subscription = $this->subscription;
 
-        if ($this->subscription->trial_ends_at) {
-            $this->subscription->update([
+        BeforeProcessSubscription::dispatch($subscription);
+
+        if ($subscription->trial_ends_at) {
+            $subscription->update([
                 'status' => Subscription::TRIAL,
-                'period_ends_at' => $this->subscription->trial_ends_at
+                'period_ends_at' => $subscription->trial_ends_at
             ]);
 
-            $this->subscription->newTrialInvoice()->create();
+            if (!$subscription->hasFlag('managed_invoices')) {
+                $subscription->newTrialInvoice()->create();
+            }
         } else {
             $limit = config('graham.intent_days');
 
-            $this->subscription->update([
+            $subscription->update([
                 'status' => Subscription::INTENT,
                 'period_ends_at' => now()->addDays($limit)
             ]);
 
-            $this->subscription->newIntentInvoice()->create();
+            if (!$subscription->hasFlag('managed_invoices')) {
+                $subscription->newIntentInvoice()->create();
+            }
         }
 
-        AfterProcessSubscription::dispatch($this->subscription);
+        AfterProcessSubscription::dispatch($subscription);
     }
 
 }

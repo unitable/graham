@@ -57,10 +57,6 @@ abstract class SubscriptionInvoiceBuilder extends Builder implements Contracts\S
         $subtotal = $subscription->price;
         $total = $subtotal - $subscription->discount;
 
-        $status = $this->status ?? (
-            $total <= 0.00 ? SubscriptionInvoice::PAID : SubscriptionInvoice::PROCESSING
-        );
-
         /** @var SubscriptionInvoice $invoice */
         $invoice = $subscription->invoices()->create([
             'status' => null,
@@ -74,8 +70,7 @@ abstract class SubscriptionInvoiceBuilder extends Builder implements Contracts\S
             'currency_rate' => $currency->rate,
             'subtotal' => $subtotal,
             'total' => $total,
-            'due_at' =>  $subscription->period_ends_at,
-            'paid_at' => $status === SubscriptionInvoice::PAID ? now() : null
+            'due_at' =>  $subscription->period_ends_at
         ]);
 
         foreach ($subscription->discounts as $discount) {
@@ -88,6 +83,7 @@ abstract class SubscriptionInvoiceBuilder extends Builder implements Contracts\S
             ]);
         }
 
+        // Dispatch event listeners.
         $invoice->update([
             'status' => SubscriptionInvoice::PROCESSING
         ]);

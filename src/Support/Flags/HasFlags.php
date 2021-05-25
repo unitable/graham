@@ -109,15 +109,54 @@ trait HasFlags {
     }
 
     /**
+     * Query only models with given flags.
+     *
+     * @param Builder $query
+     * @param array|string[] $types
+     * @param Model|null $model
+     * @return Builder
+     */
+    public function scopeWithFlags(Builder $query, array $types, ?Model $model = null): Builder {
+        return $query->whereHas('flags', function(Builder $query) use($types, $model) {
+            $query->whereIn('type', $types);
+
+            if ($model) {
+                $query->where('model_type', get_class($model));
+                $query->where('model_id', $model->{$model->getKey()});
+            }
+        });
+    }
+
+    /**
      * Query only models without a given flag.
      *
      * @param Builder $query
      * @param string $type
+     * @param Model|null $model
      * @return Builder
      */
     public function scopeWithoutFlag(Builder $query, string $type, ?Model $model = null): Builder {
         return $query->whereDoesntHave('flags', function(Builder $query) use($type, $model) {
             $query->where('type', $type);
+
+            if ($model) {
+                $query->where('model_type', get_class($model));
+                $query->where('model_id', $model->{$model->getKey()});
+            }
+        });
+    }
+
+    /**
+     * Query only models without given flags.
+     *
+     * @param Builder $query
+     * @param array|string[] $types
+     * @param Model|null $model
+     * @return Builder
+     */
+    public function scopeWithoutFlags(Builder $query, array $types, ?Model $model = null): Builder {
+        return $query->whereDoesntHave('flags', function(Builder $query) use($types, $model) {
+            $query->whereIn('type', $types);
 
             if ($model) {
                 $query->where('model_type', get_class($model));

@@ -2,6 +2,7 @@
 
 namespace Unitable\Graham;
 
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
 use Unitable\Graham\Console\Commands\CronjobCommand;
 use Unitable\Graham\Contracts\CurrencyResolver as Currency;
@@ -69,7 +70,17 @@ class GrahamServiceProvider extends ServiceProvider {
              ]);
         }
 
+        $this->registerEvents();
         $this->registerObservers();
+    }
+
+    /**
+     * Register any application events.
+     *
+     * @return void
+     */
+    protected function registerEvents() {
+        Event::listen(Events\SubscriptionInvoiceCreated::class, Listeners\StartProcessingInvoice::class);
     }
 
     /**

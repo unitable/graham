@@ -36,7 +36,7 @@ class CreateRenewalInvoices {
 
         $subscriptions = $this->engine->subscriptions()->active()
             ->whereDate('period_ends_at', '<=', now()->addDays($range))
-            ->withoutFlag('renewal_invoice')
+            ->withoutFlags(['managed_invoices', 'renewal_invoice'])
             ->get();
 
         /** @var Subscription $subscription */

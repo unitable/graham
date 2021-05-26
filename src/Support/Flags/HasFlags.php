@@ -54,11 +54,11 @@ trait HasFlags {
      * @return Model
      */
     public function addFlag(string $type, ?Model $model = null, $data = null, ?Carbon $expires_at = null): Model {
-        $attributes = [
+        $attributes = array_merge($this->createFlagAttributesArray(), [
             'type' => $type,
             'expires_at' => $expires_at,
             'data' => is_array($data) ? json_encode($data) : $data
-        ];
+        ]);
 
         if ($model) {
             $attributes['model_type'] = get_class($model);
@@ -66,6 +66,15 @@ trait HasFlags {
         }
 
         return $this->flags()->create($attributes);
+    }
+
+    /**
+     * Create a flag attributes array for addFlag() method.
+     *
+     * @return array
+     */
+    protected function createFlagAttributesArray(): array {
+        return [];
     }
 
     /**

@@ -267,4 +267,15 @@ class SubscriptionInvoice extends Model {
         return $this->hasMany(SubscriptionInvoiceFlag::class);
     }
 
+    /**
+     * Create a flag attributes array for addFlag() method.
+     *
+     * @return array
+     */
+    protected function createFlagAttributesArray(): array {
+        return [
+            'subscription_id' => $this->subscription_id
+        ];
+    }
+
 }

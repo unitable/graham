@@ -33,7 +33,7 @@ class ProcessEndedSubscriptionsPeriods {
      */
     public function handle() {
         $subscriptions = $this->engine->subscriptions()->active()
-            ->whereDate('period_ends_at', '<=', now())
+            ->where('period_ends_at', '<=', now())
             ->get();
 
         /** @var Subscription $subscription */

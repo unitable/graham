@@ -33,7 +33,7 @@ class CancelEndedSubscriptions {
      */
     public function handle() {
         $subscriptions = $this->engine->subscriptions()->active()
-            ->whereDate('ends_at', '<=', now())
+            ->where('ends_at', '<=', now())
             ->get();
 
         /** @var Subscription $subscription */

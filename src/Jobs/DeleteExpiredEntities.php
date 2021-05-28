@@ -17,11 +17,11 @@ class DeleteExpiredEntities {
      */
     public function handle() {
         SubscriptionDiscount::query()
-            ->whereDate('expires_at', '<=', now())
+            ->where('expires_at', '<=', now())
             ->delete();
 
         SubscriptionFlag::query()
-            ->whereDate('expires_at', '<=', now())
+            ->where('expires_at', '<=', now())
             ->delete();
     }
 

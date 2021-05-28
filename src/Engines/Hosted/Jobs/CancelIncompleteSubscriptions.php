@@ -35,7 +35,7 @@ class CancelIncompleteSubscriptions {
         $range = config('graham.incomplete_days');
 
         $subscriptions = $this->engine->subscriptions()->incomplete()
-            ->whereDate('period_ends_at', '<=', now()->subDays($range))
+            ->where('period_ends_at', '<=', now()->subDays($range))
             ->get();
 
         /** @var Subscription $subscription */

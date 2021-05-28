@@ -35,7 +35,7 @@ class CreateRenewalInvoices {
         $range = config('graham.renewal_days');
 
         $subscriptions = $this->engine->subscriptions()->active()
-            ->whereDate('period_ends_at', '<=', now()->addDays($range))
+            ->where('period_ends_at', '<=', now()->addDays($range))
             ->withoutFlags(['managed_invoices', 'renewal_invoice'])
             ->get();
 

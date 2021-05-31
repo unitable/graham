@@ -421,6 +421,17 @@ class Subscription extends Model {
     }
 
     /**
+     * Get the owner model.
+     *
+     * @return BelongsTo
+     */
+    public function owner(): BelongsTo {
+        $model = config('graham.model');
+
+        return $this->belongsTo($model, 'user_id');
+    }
+
+    /**
      * Get the subscription invoices models.
      *
      * @return HasMany

@@ -304,12 +304,21 @@ class Subscription extends Model {
     }
 
     /**
+     * Get the subscription plan price model.
+     *
+     * @return BelongsTo
+     */
+    public function plan_price(): BelongsTo {
+        return $this->belongsTo(PlanPrice::class, 'plan_price_id');
+    }
+
+    /**
      * Get the subscription price model.
      *
      * @return PlanPrice
      */
     public function price(): PlanPrice {
-        return $this->belongsTo(PlanPrice::class, 'plan_price_id')->first();
+        return $this->plan_price()->first();
     }
 
     /**

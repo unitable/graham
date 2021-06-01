@@ -8,5 +8,6 @@ namespace Unitable\Graham;
 trait Billable {
 
     use Concerns\ManagesSubscriptions;
+    use Concerns\ManagesInvoices;
 
 }

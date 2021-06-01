@@ -135,6 +135,17 @@ class SubscriptionInvoice extends Model {
     }
 
     /**
+     * Get the owner model.
+     *
+     * @return BelongsTo
+     */
+    public function owner(): BelongsTo {
+        $model = config('graham.model');
+
+        return $this->belongsTo($model, 'user_id');
+    }
+
+    /**
      * Filter the invoices by its related subscription status.
      *
      * @param Builder $query

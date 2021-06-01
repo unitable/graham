@@ -140,6 +140,25 @@ class Subscription extends Model {
     }
 
     /**
+     * Determine whether subscription has active status or not.
+     *
+     * @return bool
+     */
+    public function activeOnly(): bool {
+        return $this->status === static::ACTIVE;
+    }
+
+    /**
+     * Query only active status subscriptions.
+     *
+     * @param Builder $query
+     * @return Builder
+     */
+    public function scopeActiveOnly(Builder $query): Builder {
+        return $query->where('status', static::ACTIVE);
+    }
+
+    /**
      * Determine whether subscription is inactive or not.
      *
      * @return bool

@@ -55,10 +55,7 @@ class ActivateInvoicePeriod {
         BeforeActivateInvoicePeriod::dispatch($this->subscription, $this->invoice);
 
         $new_days = $this->invoice->plan_price->duration; // Use invoice instead subscription.
-
-        $period_ends_at = $this->subscription->period_ends_at;
-        $renews_at = $this->subscription->intent() ?
-            now()->addDays($new_days) : $period_ends_at->addDays($new_days);
+        $renews_at = now()->addDays($new_days);
 
         $this->subscription->update([
             'status' => Subscription::ACTIVE,

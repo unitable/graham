@@ -50,9 +50,10 @@ return [
     |--------------------------------------------------------------------------
     |
     | The wait time in days before cancel an incomplete subscription.
+    | Be careful about processing payments at weekends.
     |
     */
 
-    'incomplete_days' => 3
+    'incomplete_days' => 7
 
 ];
